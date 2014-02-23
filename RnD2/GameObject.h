@@ -59,7 +59,7 @@ protected:
 	float radius;
 	float radiusSquared;
 	Vector3 velocity;
-	int width, height, depth;
+	float width, height, depth;
 	Matrix mTranslate, mRotate, mScale;
 };
 

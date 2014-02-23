@@ -64,7 +64,7 @@ void Wall::init(Box *b, float r, Vector3 pos, float s, int w, int h, int d, floa
 {
 	box = b;
 	radius = r;
-	radius *= 1.01; //fudge factor
+	radius *= 1.01f; //fudge factor
 	position = pos;
 	scale = s;
 	radiusSquared = radius * radius;

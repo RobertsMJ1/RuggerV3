@@ -40,9 +40,6 @@ public:
 private:
 	float radius;
 	float radiusSquared;
-
-	
-	
 };
 
 #endif

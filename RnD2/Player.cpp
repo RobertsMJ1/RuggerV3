@@ -17,7 +17,7 @@ void Player::init(Box* b, Bullet* bullet, float r, Vector3 pos, Vector3 vel, flo
 	box = b;
 	Player::bullet = bullet;
 	radius = r;
-	radius *= 1.01;
+	radius *= 1.01f;
 	position = pos;
 	velocity = vel;
 	speed = sp;
