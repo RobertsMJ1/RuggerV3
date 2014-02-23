@@ -20,6 +20,8 @@
 #include "LineObject.h"
 #include "Wall.h"
 #include "gameError.h"
+#include "Player.h"
+#include "Bullet.h"
 
 namespace gameNS {
 	const int NUM_WALLS = 9;
@@ -47,8 +49,10 @@ private:
 	//Quad quad1;
 	Line rLine, bLine, gLine;
 	Box mBox, redBox, brick;
-	GameObject gameObject1/*, gameObject2, gameObject3, spinner, nuBox*/;
-	GameObject test;
+	//GameObject gameObject1/*, gameObject2, gameObject3, spinner, nuBox*/;
+	Player player;
+	Bullet pBullet;
+	//GameObject test;
 	LineObject xLine, yLine, zLine;
 	//Wall wall;
 	//GameObject wall1[50], wall2[50], wall3[50], wall4[50];
@@ -132,19 +136,11 @@ void ColoredCubeApp::initApp()
 	zLine.setPosition(Vector3(0,0,0));
 	zLine.setRotationY(ToRadian(90));
 
-	//spinAmount = 0;
-	//spinner.init(&redBox, 0, Vector3(0,4,0), Vector3(0,0,0), 0,1);
-	//nuBox.init(&redBox, 0, Vector3(0,0,5), Vector3(0,0,0), 0, 1);
-
-	gameObject1.init(&mBox, sqrt(2.0f), Vector3(0,0,0), Vector3(1,0,0), 0,1);
-	test.init(&mBox, sqrt(2.0f), Vector3(10, 0, 10), Vector3(0, 0, 0), 0, 1);
-	//gameObject2.init(&redBox, sqrt(2.0f), Vector3(4,0,0), Vector3(0,0,0), 0,1);
-	//gameObject3.init(&redBox, sqrt(2.0f), Vector3(-4,0,0), Vector3(0,0,0), 0,1);
-
-	//wall.init(&mBox, 2.0f, Vector3(-10,0,-10), 1, 10, 2, 0);
+	pBullet.init(&redBox, 2.0f, Vector3(0,0,0), Vector3(0,0,0), 0, 1);
+	player.init(&mBox, &pBullet, sqrt(2.0f), Vector3(0,0,0), Vector3(0,0,0), 0, 1);
+	//test.init(&mBox, sqrt(2.0f), Vector3(10, 0, 10), Vector3(0, 0, 0), 0, 1);
 	
-
-	
+	//Initializing the walls' position is completely arbitrary and base on trial-and-error
 	walls[0].init(&brick, 2.0f, Vector3(-35,0,-35), 1.0f, 15, 2, 15);
 	walls[1].init(&brick, 2.0f, Vector3(-35,0,15), 1.0f, 2, 2, 35);
 	walls[2].init(&brick, 2.0f, Vector3(-15,0,25), 1.0f, 2, 2, 25);
@@ -155,7 +151,6 @@ void ColoredCubeApp::initApp()
 	walls[7].init(&brick, 2.0f, Vector3(50, 0, 0), 1, 1, 10, 50);
 	walls[8].init(&brick, 2.0f, Vector3(0, 0, -50), 1, 50, 10, 1);
 	
-
 	buildFX();
 	buildVertexLayouts();
 }
@@ -172,28 +167,23 @@ void ColoredCubeApp::updateScene(float dt)
 {
 	
 	D3DApp::updateScene(dt);
-	Vector3 oldPos = gameObject1.getPosition();
+	Vector3 oldPos = player.getPosition();
 
 	
-	test.update(dt);
-	gameObject1.setSpeed(20);
-	gameObject1.setVelocity(moveCube() * gameObject1.getSpeed());
-	gameObject1.update(dt);
-	if(gameObject1.collided(&test))
-	{
-		gameObject1.setPosition(oldPos);
-	}
-	//if (gameObject1.collided(&gameObject2) || gameObject1.collided(&gameObject3) || gameObject1.collided(&nuBox))
+	//test.update(dt);
+	player.setSpeed(20);
+	player.setVelocity(moveCube() * player.getSpeed());
+	player.update(dt);
+	//if(player.collided(&test))
 	//{
-	//	//gameObject1.setSpeed(0);
-	//	//gameObject1.setVelocity(Vector3(0,0,0));
-	//	gameObject1.setPosition(oldPos);
+	//	player.setPosition(oldPos);
 	//}
+
 	for(int i=0; i<gameNS::NUM_WALLS; i++)
 	{
-		if(gameObject1.collided(&walls[i]))
+		if(player.collided(&walls[i]))
 		{
-			gameObject1.setPosition(oldPos);
+			player.setPosition(oldPos);
 		}
 	}
 	
@@ -202,19 +192,19 @@ void ColoredCubeApp::updateScene(float dt)
 	//gameObject3.update(dt);
 	//spinner.update(dt);
 	xLine.update(dt);
-	xLine.setPosition(gameObject1.getPosition());
+	xLine.setPosition(player.getPosition());
 	yLine.update(dt);
-	yLine.setPosition(gameObject1.getPosition());
+	yLine.setPosition(player.getPosition());
 	zLine.update(dt);
-	zLine.setPosition(gameObject1.getPosition());
+	zLine.setPosition(player.getPosition());
 	//wall.update(dt);
 	//quad1.update(dt);
 
 	for(int i=0; i<gameNS::NUM_WALLS; i++)walls[i].update(dt);
 
-	spinAmount += dt ;
-	if (ToRadian(spinAmount*40)>2*PI)
-		spinAmount = 0;
+	//spinAmount += dt ;
+	//if (ToRadian(spinAmount*40)>2*PI)
+	//	spinAmount = 0;
 
 	//Build the view matrix.
 	//D3DXVECTOR3 pos(-100.0f,100.0f,50.0f);
@@ -222,7 +212,7 @@ void ColoredCubeApp::updateScene(float dt)
 	D3DXVECTOR3 target(0.0f, 0.0f, 0.0f);
 	D3DXVECTOR3 up(0.0f, 1.0f, 0.0f);
 	D3DXMatrixLookAtLH(&mView, &pos, &target, &up);
-
+#pragma region Ray Picking - highly experimental, not working
 	//Ray picking - Transform view space -> world space
 	float vx = (2.0f*input->getMouseX()/mClientWidth - 1.0f)/mProj._11;
 	float vy = (-2.0f*input->getMouseY()/mClientHeight + 1.f)/mProj._22;
@@ -240,8 +230,8 @@ void ColoredCubeApp::updateScene(float dt)
 	float t = D3DXVec3Dot(&(-1*pNormal),&pPoint)/D3DXVec3Dot(&pNormal, &rayDir);
 	Vector3 intersectionPoint = rayOrigin + t*rayDir;
 
-	xLine.setPosition(intersectionPoint);
-	//xLine.setPosition(Vector3(input->getMouseX(), 0, input->getMouseY()));
+	//xLine.setPosition(intersectionPoint);
+#pragma endregion
 }
 
 void ColoredCubeApp::drawScene()
@@ -280,9 +270,12 @@ void ColoredCubeApp::drawScene()
 	for(int i=0; i<gameNS::NUM_WALLS; i++)walls[i].draw(mfxWVPVar, mTech, &mVP);
 
 	////draw the boxes
-	test.draw(mfxWVPVar, mTech, &mVP);
+	//test.draw(mfxWVPVar, mTech, &mVP);
+	player.draw(mfxWVPVar, mTech, &mVP);
+
+	//Player & bullet classes implemented
 	
-	gameObject1.draw(mfxWVPVar, mTech, &mVP);	
+	//gameObject1.draw(mfxWVPVar, mTech, &mVP);	
 
 	// We specify DT_NOCLIP, so we do not care about width/height of the rect.
 	RECT R = {5, 5, 0, 0};
@@ -346,7 +339,10 @@ Vector3 ColoredCubeApp::moveCube()
 {
 	Vector3 dir = Vector3(0,0,0);
 
-	if(input->isKeyDown(KEY_W)) dir.x = 1;
+	if(input->isKeyDown(KEY_W))
+	{
+		dir.x = 1;
+	}
 	if(input->isKeyDown(KEY_S)) dir.x = -1;
 	if(input->isKeyDown(KEY_A)) dir.z = 1;
 	if(input->isKeyDown(KEY_D)) dir.z = -1;

@@ -99,26 +99,15 @@ void Wall::update(float dt)
 
 }
 
-bool Wall::collided(GameObject *gameObject)
-{
-	Vector3 diff = position - gameObject->getPosition();
-	float length = D3DXVec3LengthSq(&diff);
-	float radii = radiusSquared + gameObject->getRadiusSquare();
-	if (length <= radii){
-		//gameObject->setInActive();
-		return true;
-	}
-	return false;
-
-	//for(int i=0; i<width; i++)
-	//{
-	//	for(int j=0; j<height; j++)
-	//	{
-	//		for(int k=0; k<depth; k++)
-	//		{
-
-	//		}
-	//	}
-	//}
-	
-}
+//bool Wall::collided(GameObject *gameObject)
+//{
+//	Vector3 diff = position - gameObject->getPosition();
+//	float length = D3DXVec3LengthSq(&diff);
+//	float radii = radiusSquared + gameObject->getRadiusSquare();
+//	if (length <= radii){
+//		//gameObject->setInActive();
+//		return true;
+//	}
+//	return false;
+//	
+//}

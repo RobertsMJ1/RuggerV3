@@ -7,6 +7,9 @@ GameObject::GameObject()
 	speed = 0;
 	active = true;
 	Identity(&world);
+	Identity(&mTranslate);
+	Identity(&mRotate);
+	Identity(&mScale);
 }
 
 GameObject::~GameObject()
@@ -40,6 +43,7 @@ void GameObject::init(Box *b, float r, Vector3 pos, Vector3 vel, float sp, float
 	speed = sp;
 	scale = s;
 	radiusSquared = radius * radius;
+	width = depth = height = s;
 }
 
 void GameObject::update(float dt)
@@ -67,6 +71,7 @@ bool GameObject::collided(GameObject *gameObject)
 		position.y - getHeight() <= gameObject->getPosition().y + gameObject->getHeight() &&
 		position.y+getHeight() >= gameObject->getPosition().y - gameObject->getHeight() &&
 		position.z - getDepth() <= gameObject->getPosition().z + gameObject->getDepth() &&
-		position.z+getDepth() >= gameObject->getPosition().z - gameObject->getDepth()) return true;
+		position.z+getDepth() >= gameObject->getPosition().z - gameObject->getDepth()) 
+			return true;
 	else return false;
 }

@@ -1,0 +1,109 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="ColoredCubeApp" Collapsed="true">
+    <Position X="0.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQAggCAgBqBABJIAAAAAAEAKCQmkAABIAIAAAUBgAIE=</HashCode>
+      <FileName>Colored Cube App.cpp</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Box" Collapsed="true">
+    <Position X="5.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAEAAAAAAAAAEIAAIAAAAAAAaAAAIAAAAAAAAAAAA=</HashCode>
+      <FileName>Box.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="D3DApp" Collapsed="true">
+    <Position X="0.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAABGiBBCkBAABAIAIAQAAAAiACwABIABAAAAECAFCA=</HashCode>
+      <FileName>d3dApp.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GameError" Collapsed="true">
+    <Position X="7" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAiAAAAACAAAAAAAAAAAAAAAAAAAAIAAAgACAgACA=</HashCode>
+      <FileName>gameError.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GameObject" Collapsed="true">
+    <Position X="1.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>whAAMAAADAAABBQ0QAIAIgACAIAzQQJDCIRAIAIEAAg=</HashCode>
+      <FileName>GameObject.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GameTimer" Collapsed="true">
+    <Position X="8.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AhBAAAgFAAAABAAoAAAIAggAAAAgAAQAAAAAAAAAAQA=</HashCode>
+      <FileName>GameTimer.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Input" Collapsed="true">
+    <Position X="5.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>A8AQRIEBX0AROUOABskIIEXYHEEBwBBUQFAoAYgJAhA=</HashCode>
+      <FileName>input.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Line" Collapsed="true">
+    <Position X="7" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAEAAAAAAAAAEIAAIAAAAAAACAAAIAAAAAAAABAAA=</HashCode>
+      <FileName>Line.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LineObject" Collapsed="true">
+    <Position X="8.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ggEAMAAAAAAQBBAAAAIBIAACCIEzAQIDAERAIAAEAAg=</HashCode>
+      <FileName>LineObject.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Origin" Collapsed="true">
+    <Position X="5.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ggAAMAAAAAAQABAgAAIAIAACCIEDAAIAAAAAIAgEAAg=</HashCode>
+      <FileName>Origin.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Quad" Collapsed="true">
+    <Position X="7" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EEAAMCAAAAAAAAEIAAIAIAACAICDBAMQAAAAAAkEAAA=</HashCode>
+      <FileName>Quad.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Wall" Collapsed="true">
+    <Position X="0.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAAAAAACAAAAAAAAAYAAAAACAAASAZAAAAAAgAEAAA=</HashCode>
+      <FileName>Wall.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Bullet" Collapsed="true">
+    <Position X="2.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAQAAA=</HashCode>
+      <FileName>Bullet.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Struct Name="ControllerState" Collapsed="true">
+    <Position X="5.25" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABAAAAAQAAIAAAAAAAAAAAAAAAEAAAAAAAABAA=</HashCode>
+      <FileName>input.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="Vertex" Collapsed="true">
+    <Position X="7" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAIAAAAAAAACAAAAAAAAAAAA=</HashCode>
+      <FileName>Vertex.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

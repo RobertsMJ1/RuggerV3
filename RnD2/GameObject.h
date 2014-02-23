@@ -15,8 +15,8 @@ public:
 	~GameObject();
 
 	void init(Box *b, float r, Vector3 pos, Vector3 vel, float sp, float s);
-	void draw(ID3D10EffectMatrixVariable* mfxWVPVar, ID3D10EffectTechnique* mTech, Matrix* mVP);
-	void update(float dt);
+	virtual void draw(ID3D10EffectMatrixVariable* mfxWVPVar, ID3D10EffectTechnique* mTech, Matrix* mVP);
+	virtual void update(float dt);
 
 	void setPosition (Vector3 pos) {position = pos;}
 	Vector3 getPosition() {return position;}
@@ -40,30 +40,27 @@ public:
 	void setRotateZ(float rz){rotZ = rz;}
 
 	//float getWidth(){return scale;}
-	virtual float getWidth(){
-		return scale;
-	}
-	virtual float getHeight(){
-		return scale;
-	}
-	virtual float getDepth(){
-		return scale;
-	}
+	virtual float getWidth(){return width;}
+	virtual float getHeight(){return height;}
+	virtual float getDepth(){return depth;}
 
 private:
-	Box *box; 
 	
-	Vector3 velocity;
 	float speed;
-	float radius;
-	float radiusSquared;
+	
 	
 protected:
+	Box *box;
 	Vector3 position;
 	Matrix world;
 	float scale;
 	float rotX, rotY, rotZ;
 	bool active;
+	float radius;
+	float radiusSquared;
+	Vector3 velocity;
+	int width, height, depth;
+	Matrix mTranslate, mRotate, mScale;
 };
 
 

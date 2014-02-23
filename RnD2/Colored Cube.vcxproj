@@ -87,6 +87,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Box.cpp" />
+    <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Colored Cube App.cpp" />
     <ClCompile Include="d3dApp.cpp" />
     <ClCompile Include="GameObject.cpp" />
@@ -95,11 +96,13 @@
     <ClCompile Include="Line.cpp" />
     <ClCompile Include="LineObject.cpp" />
     <ClCompile Include="Origin.cpp" />
+    <ClCompile Include="Player.cpp" />
     <ClCompile Include="Quad.cpp" />
     <ClCompile Include="Wall.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Box.h" />
+    <ClInclude Include="Bullet.h" />
     <ClInclude Include="constants.h" />
     <ClInclude Include="d3dApp.h" />
     <ClInclude Include="d3dUtil.h" />
@@ -110,12 +113,13 @@
     <ClInclude Include="Line.h" />
     <ClInclude Include="LineObject.h" />
     <ClInclude Include="Origin.h" />
+    <ClInclude Include="Player.h" />
     <ClInclude Include="Quad.h" />
     <ClInclude Include="Vertex.h" />
     <ClInclude Include="Wall.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="ClassDiagram1.cd" />
+    <None Include="ClassDiagram.cd" />
     <None Include="color.fx" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
