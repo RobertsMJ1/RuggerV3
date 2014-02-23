@@ -37,6 +37,7 @@ public:
 	void updateScene(float dt);
 	void drawScene(); 
 	Vector3 moveCube();
+	void drawLine(LineObject*);
 
 private:
 	void buildFX();
@@ -269,87 +270,31 @@ void ColoredCubeApp::drawScene()
 	mfxFLIPVar->SetRawValue(&foo[0], 0, sizeof(int));
 
 	//draw the lines
-	mWVP = xLine.getWorldMatrix()*mView*mProj;
-	mfxWVPVar->SetMatrix((float*)&mWVP);
-	xLine.setMTech(mTech);
-	xLine.draw();
+	drawLine(&xLine);
+	drawLine(&yLine);
+	drawLine(&zLine);
 	
-	mWVP = yLine.getWorldMatrix() *mView*mProj;
-	mfxWVPVar->SetMatrix((float*)&mWVP);
-	yLine.setMTech(mTech);
-	yLine.draw();
-
-	mWVP = zLine.getWorldMatrix() *mView*mProj;
-	mfxWVPVar->SetMatrix((float*)&mWVP);
-	zLine.setMTech(mTech);
-	zLine.draw();
-
 	/*****************************************
 	Walls!
 	*******************************************/
 	for(int i=0; i<gameNS::NUM_WALLS; i++)walls[i].draw(mfxWVPVar, mTech, &mVP);
 
-
-
-	////draw the quad using the "old" method
-	////compare how messy this is compared to the objectified geometry classes
-	//mWVP = quad1.getWorld()*mView*mProj;
-	//mfxWVPVar->SetMatrix((float*)&mWVP);
- //   mTech->GetDesc( &techDesc );
-	//for(UINT p = 0; p < techDesc.Passes; ++p)
- //   {
- //       mTech->GetPassByIndex( p )->Apply(0);
- //      quad1.draw();
- //   }
-
 	////draw the boxes
-	//mWVP = gameObject1.getWorldMatrix()  *mView*mProj;
 	test.draw(mfxWVPVar, mTech, &mVP);
-	//gameObject1.setMTech(mTech);
-	gameObject1.draw(mfxWVPVar, mTech, &mVP);
-
-//	mWVP = gameObject2.getWorldMatrix()*mView*mProj;
-//	mfxWVPVar->SetMatrix((float*)&mWVP);
-//	foo[0] = 0;
-//	mfxFLIPVar->SetRawValue(&foo[0], 0, sizeof(int));
-////	gameObject2.setMTech(mTech);
-//	gameObject2.draw(mfxWVPVar, mTech, &mVP);
-//
-//	mWVP = gameObject3.getWorldMatrix()*mView*mProj;
-//	foo[0] = 0;
-//	mfxFLIPVar->SetRawValue(&foo[0], 0, sizeof(int));
-//	mfxWVPVar->SetMatrix((float*)&mWVP);
-////	gameObject3.setMTech(mTech);
-//	gameObject3.draw(mfxWVPVar, mTech, &mVP);
-//
-//	Matrix trans;
-//	Translate(&trans, 0, 0, 5);
-//	mWVP = nuBox.getWorldMatrix()*trans*mView*mProj;
-//	mfxWVPVar->SetMatrix((float*)&mWVP);
-////	nuBox.setMTech(mTech);
-//	nuBox.draw(mfxWVPVar, mTech, &(trans*mVP));
-//     
-//	//draw the spinning box
-//	if (ToRadian(spinAmount*40) > PI)
-//		foo[0] = 1;
-//	else
-//		foo[0] = 0;
-//	mfxFLIPVar->SetRawValue(&foo[0], 0, sizeof(int));
-//	Matrix spin;
-//	RotateY(&spin, ToRadian(spinAmount*40));
-//	Matrix translate;
-//	Translate(&translate, 5, 0, 0);
-//	mWVP = spinner.getWorldMatrix() *translate * spin  *mView*mProj;
-//	mfxWVPVar->SetMatrix((float*)&mWVP);
-////	spinner.setMTech(mTech);
-//	spinner.draw(mfxWVPVar, mTech, &(translate*spin*mVP));
-
 	
+	gameObject1.draw(mfxWVPVar, mTech, &mVP);	
 
 	// We specify DT_NOCLIP, so we do not care about width/height of the rect.
 	RECT R = {5, 5, 0, 0};
 	mFont->DrawText(0, mFrameStats.c_str(), -1, &R, DT_NOCLIP, BLACK);
 	mSwapChain->Present(0, 0);
+}
+
+void ColoredCubeApp::drawLine(LineObject* line) {
+	mWVP = line->getWorldMatrix()*mView*mProj;
+	mfxWVPVar->SetMatrix((float*)&mWVP);
+	line->setMTech(mTech);
+	line->draw();
 }
 
 void ColoredCubeApp::buildFX()
