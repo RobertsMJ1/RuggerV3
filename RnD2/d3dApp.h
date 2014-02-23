@@ -11,7 +11,7 @@
 #define D3DAPP_H
 
 
-#include "C:\Users\ROBERTSMJ1\Desktop\Common\d3dUtil.h"
+#include "d3dUtil.h"
 #include "GameTimer.h"
 #include <string>
 #include "input.h"
