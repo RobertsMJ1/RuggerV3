@@ -1,7 +1,7 @@
 
 #include "cameraObject.h"
 
-cameraObject::cameraObject()
+cameraObject::cameraObject() : GameObject()
 {
 	radius = 0;
 	speed = 0;
@@ -16,6 +16,7 @@ cameraObject::~cameraObject()
 
 void cameraObject::draw(ID3D10EffectMatrixVariable* mfxWVPVar, ID3D10EffectTechnique* mTech, Matrix* mVP)
 {
+	if(!active)return;
 	Matrix mWVP = world* (*mVP);
 	mfxWVPVar->SetMatrix((float*)&mWVP);
 	D3D10_TECHNIQUE_DESC techDesc;
@@ -39,6 +40,9 @@ void cameraObject::init(Box *b, float r, Vector3 pos, Vector3 vel, float initRot
 	radiusSquared = radius * radius;
 	spinAmount = initialRotation = initRot;
 	motionHinge = 1;
+	width = s;
+	height = s;
+	depth = s;
 }
 
 void cameraObject::update(float dt)
@@ -63,14 +67,4 @@ void cameraObject::update(float dt)
 	
 	Translate(&translate, position.x, position.y, position.z);
 	world = scale * rotate * point * translate;
-}
-
-bool cameraObject::collided(cameraObject *cameraObject)
-{
-	Vector3 diff = position - cameraObject->getPosition();
-	float length = D3DXVec3LengthSq(&diff);
-	float radii = radiusSquared + cameraObject->getRadiusSquare();
-	if (length <= radii)
-		return true;
-	return false;
 }

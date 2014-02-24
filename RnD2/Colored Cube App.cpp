@@ -204,8 +204,8 @@ void ColoredCubeApp::initApp()
 	walls[7].init(&brick, 2.0f, Vector3(50, 0, 0), 1, 1, 10, 50);
 	walls[8].init(&brick, 2.0f, Vector3(0, 0, -50), 1, 50, 10, 1);
 	
-	enemyCam[0].init(&camBox, 2.0f, Vector3(3,5,0), Vector3(0,0,0), PI/4, 0, 1);
-	enemyCam[1].init(&camBox, 2.0f, Vector3(3,5,-4), Vector3(0,0,0), -PI/4, 0, 1);
+	enemyCam[0].init(&camBox, 2.0f, Vector3(3,0,0), Vector3(0,0,0), PI/4, 0, 1);
+	enemyCam[1].init(&camBox, 2.0f, Vector3(3,0,-4), Vector3(0,0,0), -PI/4, 0, 1);
 	buildFX();
 	buildVertexLayouts();
 }
@@ -270,19 +270,26 @@ void ColoredCubeApp::updateScene(float dt)
 	//quad1.update(dt);
 
 	for(int i=0; i<gameNS::NUM_WALLS; i++)walls[i].update(dt);
-	for(int i=0; i<gameNS::NUM_CAMS; i++)enemyCam[i].update(dt);
+	for(int i=0; i<gameNS::NUM_CAMS; i++)
+	{
+		if(pBullet.collided(&enemyCam[i]))
+		{
+			enemyCam[i].setInActive();
+		}
+		enemyCam[i].update(dt);
+	}
 	//spinAmount += dt ;
 	//if (ToRadian(spinAmount*40)>2*PI)
 	//	spinAmount = 0;
 
 	//Build the view matrix.
 	//D3DXVECTOR3 pos(-100.0f,100.0f,50.0f);
-	D3DXVECTOR3 pos(-50.0f, 150.0f, 0.0f);
-	D3DXVECTOR3 target(0.0f, 0.0f, 0.0f);
-	D3DXVECTOR3 up(0.0f, 1.0f, 0.0f);
-	//D3DXVECTOR3 pos(player.getPosition().x - 25, player.getPosition().y + 50, player.getPosition().z);
-	//D3DXVECTOR3 target(player.getPosition());
+	//D3DXVECTOR3 pos(-50.0f, 150.0f, 0.0f);
+	//D3DXVECTOR3 target(0.0f, 0.0f, 0.0f);
 	//D3DXVECTOR3 up(0.0f, 1.0f, 0.0f);
+	D3DXVECTOR3 pos(player.getPosition().x - 25, player.getPosition().y + 50, player.getPosition().z);
+	D3DXVECTOR3 target(player.getPosition());
+	D3DXVECTOR3 up(0.0f, 1.0f, 0.0f);
 	D3DXMatrixLookAtLH(&mView, &pos, &target, &up);
 
 }
