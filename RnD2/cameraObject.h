@@ -3,7 +3,7 @@
 #define cameraObject_H
 
 //#include "d3dUtil.h"
-#include "C:\Users\lehmanad1\SkyDrive\Spring 2014\COMP 446\Scene Design Class Example\Scene Design Class Example\Common\d3dUtil.h"
+#include "d3dUtil.h"
 #include "Box.h"
 #include "constants.h"
 

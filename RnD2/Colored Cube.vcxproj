@@ -119,8 +119,12 @@
     <ClInclude Include="Origin.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Quad.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="Vertex.h" />
     <ClInclude Include="Wall.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Colored Cube.rc" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
