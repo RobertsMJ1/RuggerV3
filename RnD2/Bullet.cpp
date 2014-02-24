@@ -3,6 +3,7 @@
 
 Bullet::Bullet(void) : GameObject()
 {
+	active = false;
 }
 
 
@@ -20,7 +21,7 @@ void Bullet::init(Box* b, float r, Vector3 pos, Vector3 vel, float sp, float s)
 	speed = sp;
 	scale = s;
 	radiusSquared = radius * radius;
-
+	width = height = depth = scale;
 }
 
 void Bullet::draw(ID3D10EffectMatrixVariable* mfxWVPVar, ID3D10EffectTechnique* mTech, Matrix* mVP)
@@ -42,7 +43,8 @@ void Bullet::update(float dt)
 {
 	position += velocity*dt;
 	Identity(&world);
-	D3DXMatrixScaling(&mScale, width, height, depth);
-	D3DXMatrixTranslation(&mTranslate, position.x, position.y, position.z);
-	D3DXMatrixMultiply(&world, &mScale, &mTranslate);
+	Translate(&world, position.x, position.y, position.z);
+	//D3DXMatrixScaling(&mScale, width, height, depth);
+	//D3DXMatrixTranslation(&mTranslate, position.x, position.y, position.z);
+	//D3DXMatrixMultiply(&world, &mScale, &mTranslate);
 }

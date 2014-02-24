@@ -122,7 +122,7 @@ void ColoredCubeApp::initApp()
 	
 	mBox.init(md3dDevice, 1.0f, WHITE);
 	brick.init(md3dDevice, 1.0f, DARKBROWN);
-	//redBox.init(md3dDevice, 1.0f, RED);
+	//redBox.init(md3dDevice, 0.00001f, RED);
 	rLine.init(md3dDevice, 10.0f, RED);
 	bLine.init(md3dDevice, 10.0f, BLACK);
 	gLine.init(md3dDevice, 10.0f, GREEN);
@@ -135,8 +135,8 @@ void ColoredCubeApp::initApp()
 	zLine.init(&gLine, Vector3(0,0,0), 5);
 	zLine.setPosition(Vector3(0,0,0));
 	zLine.setRotationY(ToRadian(90));
-
-	pBullet.init(&redBox, 2.0f, Vector3(0,0,0), Vector3(0,0,0), 0, 1);
+	
+	pBullet.init(&brick, 2.0f, Vector3(0,0,0), Vector3(0,0,0), 0, 1);
 	player.init(&mBox, &pBullet, sqrt(2.0f), Vector3(0,0,0), Vector3(0,0,0), 0, 1);
 	//test.init(&mBox, sqrt(2.0f), Vector3(10, 0, 10), Vector3(0, 0, 0), 0, 1);
 	
@@ -169,7 +169,12 @@ void ColoredCubeApp::updateScene(float dt)
 	D3DApp::updateScene(dt);
 	Vector3 oldPos = player.getPosition();
 
-	
+
+	if(input->isKeyDown(VK_UP)) player.shoot(Vector3(1, 0, 0));
+	if(input->isKeyDown(VK_DOWN)) player.shoot(Vector3(-1, 0, 0));
+	if(input->isKeyDown(VK_LEFT)) player.shoot(Vector3(0, 0, 1));
+	if(input->isKeyDown(VK_RIGHT)) player.shoot(Vector3(0, 0, -1));
+
 	//test.update(dt);
 	player.setSpeed(20);
 	player.setVelocity(moveCube() * player.getSpeed());
@@ -184,6 +189,10 @@ void ColoredCubeApp::updateScene(float dt)
 		if(player.collided(&walls[i]))
 		{
 			player.setPosition(oldPos);
+		}
+		if(pBullet.collided(&walls[i]))
+		{
+			pBullet.setInActive();
 		}
 	}
 	
@@ -272,7 +281,7 @@ void ColoredCubeApp::drawScene()
 	////draw the boxes
 	//test.draw(mfxWVPVar, mTech, &mVP);
 	player.draw(mfxWVPVar, mTech, &mVP);
-
+	pBullet.draw(mfxWVPVar, mTech, &mVP);
 	//Player & bullet classes implemented
 	
 	//gameObject1.draw(mfxWVPVar, mTech, &mVP);	

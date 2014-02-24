@@ -14,6 +14,8 @@ public:
 	void draw(ID3D10EffectMatrixVariable* mfxWVPVar, ID3D10EffectTechnique* mTech, Matrix* mVP);
 	void update(float dt);
 
+	void shoot(Vector3 direction);
+
 private:
 	float speed;
 	float radius;

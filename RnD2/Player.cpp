@@ -40,7 +40,7 @@ void Player::draw(ID3D10EffectMatrixVariable* mfxWVPVar, ID3D10EffectTechnique* 
     {
         mTech->GetPassByIndex( p )->Apply(0);
         box->draw();
-		//bullet->draw(mfxWVPVar, mTech, mVP);
+		//if(bullet->getActiveState())bullet->draw(mfxWVPVar, mTech, mVP);
     }
 }
 
@@ -52,5 +52,21 @@ void Player::update(float dt)
 	D3DXMatrixTranslation(&mTranslate, position.x, position.y, position.z);
 	D3DXMatrixMultiply(&world, &mScale, &mTranslate);
 	//Translate(&world, position.x, position.y, position.z);
-	//bullet->update(dt);
+	bullet->update(dt);
+}
+
+void Player::shoot(Vector3 direction)
+{
+	//If the player's got an active bullet on the level, he doesn't get to shoot
+	if(bullet->getActiveState() == true) return;
+
+	bullet->setPosition(position);
+	bullet->setSpeed(bulletNS::SPEED);
+	
+	Vector3 nDir(0,0,0);
+	
+	D3DXVec3Normalize(&nDir, &direction);
+	nDir *= bulletNS::SPEED;
+	bullet->setVelocity(nDir);
+	bullet->setActive();
 }

@@ -2,6 +2,10 @@
 
 #include "gameobject.h"
 
+namespace bulletNS {
+	const int SPEED = 50;
+}
+
 class Bullet :	public GameObject
 {
 public:
@@ -13,7 +17,6 @@ public:
 	void update(float dt);
 
 private:
-	Vector3 velocity;
 	float speed;
 	float radius;
 };
