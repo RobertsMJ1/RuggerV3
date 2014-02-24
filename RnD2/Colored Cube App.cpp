@@ -14,6 +14,7 @@
 //#include "textDX.h"
 #include "Box.h"
 #include "GameObject.h"
+#include "cameraObject.h"
 #include "Line.h"
 #include "Quad.h"
 #include <d3dx9math.h>
@@ -27,6 +28,7 @@
 namespace gameNS {
 	const int NUM_WALLS = 9;
 	const int PERIMETER = 4;
+	const int NUM_CAMS = 2;
 }
 
 class ColoredCubeApp : public D3DApp
@@ -49,7 +51,7 @@ private:
 private:
 	//Quad quad1;
 	Line rLine, bLine, gLine;
-	Box mBox, redBox, brick;
+	Box mBox, redBox, brick, camBox;
 	//GameObject gameObject1/*, gameObject2, gameObject3, spinner, nuBox*/;
 	Player player;
 	Bullet pBullet;
@@ -59,6 +61,7 @@ private:
 	//GameObject wall1[50], wall2[50], wall3[50], wall4[50];
 
 	Wall walls[gameNS::NUM_WALLS];
+	cameraObject enemyCam[gameNS::NUM_CAMS];
 	//Wall perimeter[4];
 	Gravball gravball;
 
@@ -124,6 +127,7 @@ void ColoredCubeApp::initApp()
 	
 	mBox.init(md3dDevice, 1.0f, WHITE);
 	brick.init(md3dDevice, 1.0f, DARKBROWN);
+	camBox.init(md3dDevice, 1.0f, BLACK);
 	//redBox.init(md3dDevice, 0.00001f, RED);
 	rLine.init(md3dDevice, 10.0f, RED);
 	bLine.init(md3dDevice, 10.0f, BLACK);
@@ -153,6 +157,8 @@ void ColoredCubeApp::initApp()
 	walls[7].init(&brick, 2.0f, Vector3(50, 0, 0), 1, 1, 10, 50);
 	walls[8].init(&brick, 2.0f, Vector3(0, 0, -50), 1, 50, 10, 1);
 	
+	enemyCam[0].init(&camBox, 2.0f, Vector3(3,5,0), Vector3(0,0,0), PI/4, 0, 1);
+	enemyCam[1].init(&camBox, 2.0f, Vector3(3,5,-4), Vector3(0,0,0), -PI/4, 0, 1);
 	buildFX();
 	buildVertexLayouts();
 }
@@ -212,7 +218,7 @@ void ColoredCubeApp::updateScene(float dt)
 	//quad1.update(dt);
 
 	for(int i=0; i<gameNS::NUM_WALLS; i++)walls[i].update(dt);
-
+	for(int i=0; i<gameNS::NUM_CAMS; i++)enemyCam[i].update(dt);
 	//spinAmount += dt ;
 	//if (ToRadian(spinAmount*40)>2*PI)
 	//	spinAmount = 0;
@@ -287,6 +293,11 @@ void ColoredCubeApp::drawScene()
 	//Player & bullet classes implemented
 	gravball.draw(mfxWVPVar, mTech, &mVP);
 	//gameObject1.draw(mfxWVPVar, mTech, &mVP);	
+
+	/*****************************************
+	Enemy Cameras
+	*******************************************/
+	for(int i=0; i<gameNS::NUM_CAMS; i++)enemyCam[i].draw(mfxWVPVar, mTech, &mVP);
 
 	// We specify DT_NOCLIP, so we do not care about width/height of the rect.
 	RECT R = {5, 5, 0, 0};
