@@ -97,12 +97,12 @@ void Player::rotateTargeting(int s)
 	switch(s)
 	{
 	case 0:
-		D3DXMatrixRotationY(&rotate, ToRadian(-0.5f));
+		D3DXMatrixRotationY(&rotate, ToRadian(-0.25f));
 		D3DXVec4Transform(&tV, &tV, &rotate);
 		
 		break;
 	case 1:
-		D3DXMatrixRotationY(&rotate, ToRadian(0.5f));
+		D3DXMatrixRotationY(&rotate, ToRadian(0.25f));
 		D3DXVec4Transform(&tV, &tV, &rotate);
 		break;
 	}

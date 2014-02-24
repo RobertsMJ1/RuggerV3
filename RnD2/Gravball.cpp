@@ -60,6 +60,7 @@ void Gravball::update(float dt)
  //       return;
 
  //   float rr = pow((position.x - bullet->getPosition().x),2) + pow((position.z - bullet->getPosition().z),2);
+	//rr *= 1000;
  //   float force = GRAVITY * mass * bullet->getMass()/rr;
 
  //   // --- Using vector math to create gravity vector ---

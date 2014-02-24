@@ -95,7 +95,7 @@ private:
 private:
 	//Quad quad1;
 	Line rLine, bLine, gLine;
-	Box mBox, redBox, brick, camBox;
+	Box mBox, redBox, brick, camBox, bulletBox;
 	//GameObject gameObject1/*, gameObject2, gameObject3, spinner, nuBox*/;
 	Player player;
 	Bullet pBullet;
@@ -174,6 +174,7 @@ void ColoredCubeApp::initApp()
 	mBox.init(md3dDevice, 1.0f, WHITE);
 	brick.init(md3dDevice, 1.0f, DARKBROWN);
 	camBox.init(md3dDevice, 1.0f, BLACK);
+	bulletBox.init(md3dDevice, 0.5f, BEACH_SAND);
 	//redBox.init(md3dDevice, 0.00001f, RED);
 	rLine.init(md3dDevice, 10.0f, RED);
 	bLine.init(md3dDevice, 10.0f, BLACK);
@@ -188,7 +189,7 @@ void ColoredCubeApp::initApp()
 	zLine.setPosition(Vector3(0,0,0));
 	zLine.setRotationY(ToRadian(90));
 	
-	pBullet.init(&brick, 2.0f, Vector3(0,0,0), Vector3(0,0,0), 0, 1);
+	pBullet.init(&bulletBox, 2.0f, Vector3(0,0,0), Vector3(0,0,0), 0, 1);
 	player.init(&mBox, &pBullet, sqrt(2.0f), Vector3(0,0,0), Vector3(0,0,0), 0, 1);
 	//test.init(&mBox, sqrt(2.0f), Vector3(10, 0, 10), Vector3(0, 0, 0), 0, 1);
 	gravball.init(&mBox, &pBullet, sqrt(2.0f), Vector3(10, 0, 10), Vector3(0,0,0), 0, 1);
@@ -279,27 +280,11 @@ void ColoredCubeApp::updateScene(float dt)
 	D3DXVECTOR3 pos(-50.0f, 150.0f, 0.0f);
 	D3DXVECTOR3 target(0.0f, 0.0f, 0.0f);
 	D3DXVECTOR3 up(0.0f, 1.0f, 0.0f);
+	//D3DXVECTOR3 pos(player.getPosition().x - 25, player.getPosition().y + 50, player.getPosition().z);
+	//D3DXVECTOR3 target(player.getPosition());
+	//D3DXVECTOR3 up(0.0f, 1.0f, 0.0f);
 	D3DXMatrixLookAtLH(&mView, &pos, &target, &up);
-#pragma region Ray Picking - highly experimental, not working
-	//Ray picking - Transform view space -> world space
-	float vx = (2.0f*input->getMouseX()/mClientWidth - 1.0f)/mProj._11;
-	float vy = (-2.0f*input->getMouseY()/mClientHeight + 1.f)/mProj._22;
 
-	D3DXVECTOR3 rayOrigin(0.f, 0.f, 0.f);
-	D3DXVECTOR3 rayDir(vx, vy, 1.f);
-	D3DXMATRIX inverseV;
-	D3DXMatrixInverse(&inverseV, 0, &mView);
-
-	D3DXVec3TransformCoord(&rayOrigin, &rayOrigin, &inverseV);
-	D3DXVec3TransformNormal(&rayDir, &rayDir, &inverseV);
-
-	Vector3 pNormal(0, 1, 0);
-	Vector3 pPoint(1, 0, 0);
-	float t = D3DXVec3Dot(&(-1*pNormal),&pPoint)/D3DXVec3Dot(&pNormal, &rayDir);
-	Vector3 intersectionPoint = rayOrigin + t*rayDir;
-
-	//xLine.setPosition(intersectionPoint);
-#pragma endregion
 }
 
 void ColoredCubeApp::drawScene()
