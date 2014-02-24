@@ -228,10 +228,10 @@ void ColoredCubeApp::updateScene(float dt)
 	//if(input->isKeyDown(VK_UP)) player.shoot();
 	//if(input->isKeyDown(VK_DOWN)) player.shoot();
 	if(input->isKeyDown(VK_LEFT)) {
-		player.rotateTargeting(0, dt);
+		player.rotateTargeting(0);
 	}
 	if(input->isKeyDown(VK_RIGHT)){
-		player.rotateTargeting(1, dt);
+		player.rotateTargeting(1);
 	}
 	if(input->isKeyDown(VK_SPACE)) player.shoot();
 	gravball.update(dt);
@@ -277,12 +277,12 @@ void ColoredCubeApp::updateScene(float dt)
 
 	//Build the view matrix.
 	//D3DXVECTOR3 pos(-100.0f,100.0f,50.0f);
-	//D3DXVECTOR3 pos(-50.0f, 150.0f, 0.0f);
-	//D3DXVECTOR3 target(0.0f, 0.0f, 0.0f);
-	//D3DXVECTOR3 up(0.0f, 1.0f, 0.0f);
-	D3DXVECTOR3 pos(player.getPosition().x - player.getTargetVector().x*25, player.getPosition().y + 10, player.getPosition().z - player.getTargetVector().z*25);
-	D3DXVECTOR3 target(player.getPosition());
+	D3DXVECTOR3 pos(-50.0f, 150.0f, 0.0f);
+	D3DXVECTOR3 target(0.0f, 0.0f, 0.0f);
 	D3DXVECTOR3 up(0.0f, 1.0f, 0.0f);
+	//D3DXVECTOR3 pos(player.getPosition().x - 25, player.getPosition().y + 50, player.getPosition().z);
+	//D3DXVECTOR3 target(player.getPosition());
+	//D3DXVECTOR3 up(0.0f, 1.0f, 0.0f);
 	D3DXMatrixLookAtLH(&mView, &pos, &target, &up);
 
 }

@@ -27,7 +27,6 @@ void Player::init(Box* b, Bullet* bullet, float r, Vector3 pos, Vector3 vel, flo
 	height = s;
 	depth = s;
 	targetVector = Vector3(1, 0, 0);
-	theta = 0;
 }
 
 void Player::draw(ID3D10EffectMatrixVariable* mfxWVPVar, ID3D10EffectTechnique* mTech, Matrix* mVP)
@@ -62,23 +61,10 @@ void Player::draw(ID3D10EffectMatrixVariable* mfxWVPVar, ID3D10EffectTechnique* 
 void Player::update(float dt)
 {
 	position += velocity*dt;
-	//position += targetVector*speed;
 	Identity(&world);
 	D3DXMatrixScaling(&mScale, width, height, depth);
 	D3DXMatrixTranslation(&mTranslate, position.x, position.y, position.z);
-	D3DXMatrixRotationY(&mRotate, theta);
-	world = world * mScale * mRotate * mTranslate;
-	
-	//D3DXVECTOR4 tV(0, 0, 0, 0);
-	//tV.x = targetVector.x;
-	//tV.y = targetVector.y;
-	//tV.z = targetVector.z;
-	//D3DXVec4Transform(&tV, &tV, &mRotate);
-	//targetVector.x = tV.x;
-	//targetVector.y = tV.y;
-	//targetVector.z = tV.z;
-
-	//D3DXMatrixMultiply(&world, &mScale, &mTranslate);
+	D3DXMatrixMultiply(&world, &mScale, &mTranslate);
 	//Translate(&world, position.x, position.y, position.z);
 	bullet->update(dt);
 }
@@ -99,10 +85,8 @@ void Player::shoot()
 	bullet->setActive();
 }
 
-void Player::rotateTargeting(int s, float dt)
+void Player::rotateTargeting(int s)
 {
-	//theta += 1.0f;
-	if(theta > 360) theta -= 360;
 	//0 for rotating ccw, 1 for cw
 	Matrix rotate;
 	Identity(&rotate);
@@ -113,18 +97,16 @@ void Player::rotateTargeting(int s, float dt)
 	switch(s)
 	{
 	case 0:
-		D3DXMatrixRotationY(&rotate, ToRadian(-0.25));
+		D3DXMatrixRotationY(&rotate, ToRadian(-0.25f));
 		D3DXVec4Transform(&tV, &tV, &rotate);
-		theta -= 2.5*dt;
+		
 		break;
 	case 1:
-		D3DXMatrixRotationY(&rotate, ToRadian(0.25));
+		D3DXMatrixRotationY(&rotate, ToRadian(0.25f));
 		D3DXVec4Transform(&tV, &tV, &rotate);
-		theta += 2.5*dt;
 		break;
 	}
 	targetVector.x = tV.x;
 	targetVector.y = tV.y;
 	targetVector.z = tV.z;
-	//world *= rotate;
 }
