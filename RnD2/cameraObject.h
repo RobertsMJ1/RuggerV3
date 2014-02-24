@@ -7,6 +7,7 @@
 #include "Box.h"
 #include "gameObject.h"
 #include "constants.h"
+#include "gameobject.h"
 
 class cameraObject : public GameObject
 {
@@ -35,7 +36,11 @@ public:
 	//void setInActive() {active = false;}
 	//bool getActiveState() {return active;}
 	//void setMTech(ID3D10EffectTechnique* m){ mTech = m;}
+<<<<<<< HEAD
 	//bool collided(cameraObject *cameraObject);
+=======
+	bool collided(cameraObject *cameraObject);
+>>>>>>> Audio Implemented
 
 
 private:

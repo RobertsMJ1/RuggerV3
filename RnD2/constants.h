@@ -35,6 +35,16 @@ const UCHAR KEY_S   = 'S';
     ((COLOR_ARGB)((((a)&0xff)<<24)|(((r)&0xff)<<16)|(((g)&0xff)<<8)|((b)&0xff)))
 #define LP_DXFONT   LPD3DX10FONT
 
+
+//**********AUDIO**********//
+
+// WAVE_BANK_1 must be location of .xwb file.
+wchar_t const WAVE_BANK[]  = L"audio\\Win\\Wave Bank.xwb";
+// SOUND_BANK_1 must be location of .xsb file.
+wchar_t const SOUND_BANK[] = L"audio\\Win\\Sound Bank.xsb";
+
+//audio cues
+const char TEST_CUE[] = "oomph";
 //=============================================================================
 // Function templates for safely dealing with pointer referenced items.
 // The functions defined by these templates may be called using a normal

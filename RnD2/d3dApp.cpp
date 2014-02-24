@@ -65,6 +65,7 @@ D3DApp::~D3DApp()
 	ReleaseCOM(mDepthStencilBuffer);
 	ReleaseCOM(md3dDevice);
 	ReleaseCOM(mFont);
+
 }
 
 HINSTANCE D3DApp::getAppInst()
@@ -125,6 +126,13 @@ void D3DApp::initApp()
     wcscpy(fontDesc.FaceName, L"Arial Bold");
 
 	D3DX10CreateFontIndirect(md3dDevice, &fontDesc, &mFont);
+	audio = new Audio();
+	if (*WAVE_BANK != '\0' && *SOUND_BANK != '\0')  // if sound files defined
+		audio->initialize();
+	else{
+		//error-throwing code here
+	}
+    
 }
  
 void D3DApp::onResize()

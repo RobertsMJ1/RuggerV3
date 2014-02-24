@@ -18,7 +18,7 @@
 #include "input.h"
 #include "constants.h"
 #include "debugText.h"
-
+#include "audio.h"
 
 class D3DApp
 {
@@ -45,7 +45,7 @@ public:
 protected:
 	void initMainWindow();
 	void initDirect3D();
-	
+	Audio* audio;
 	Input* input;
 protected:
 

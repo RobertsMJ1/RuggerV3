@@ -25,7 +25,7 @@
 #include "Bullet.h"
 #include "Gravball.h"
 #include "debugText.h"
-
+#include "Audio.h"
 
 namespace colorNS
 {
@@ -165,6 +165,10 @@ ColoredCubeApp::~ColoredCubeApp()
 
 	ReleaseCOM(mFX);
 	ReleaseCOM(mVertexLayout);
+
+	//CHANGE if audio needs to be released in d3dApp instead
+	safeDelete(audio);
+  // 
 }
 
 void ColoredCubeApp::initApp()
@@ -224,7 +228,6 @@ void ColoredCubeApp::updateScene(float dt)
 	D3DApp::updateScene(dt);
 	Vector3 oldPos = player.getPosition();
 
-
 	//if(input->isKeyDown(VK_UP)) player.shoot();
 	//if(input->isKeyDown(VK_DOWN)) player.shoot();
 	if(input->isKeyDown(VK_LEFT)) {
@@ -249,6 +252,10 @@ void ColoredCubeApp::updateScene(float dt)
 		if(player.collided(&walls[i]))
 		{
 			player.setPosition(oldPos);
+
+			//REMOVE AFTER TEST
+			audio->playCue(TEST_CUE);
+		  //
 		}
 		if(pBullet.collided(&walls[i]))
 		{
