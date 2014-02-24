@@ -4,7 +4,7 @@
 
 namespace bulletNS {
 	const int SPEED = 50;
-	const float MASS = 0;
+	const float MASS = 5000;
 }
 
 class Bullet :	public GameObject

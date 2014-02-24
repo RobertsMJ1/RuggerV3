@@ -4,7 +4,7 @@
 
 namespace gravNS
 {
-	const float MASS = 1.0;
+	const float MASS = 1e13;
 }
 
 class Gravball : public GameObject
