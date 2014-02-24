@@ -40,7 +40,7 @@ void Player::draw(ID3D10EffectMatrixVariable* mfxWVPVar, ID3D10EffectTechnique* 
     {
         mTech->GetPassByIndex( p )->Apply(0);
         box->draw();
-		//if(bullet->getActiveState())bullet->draw(mfxWVPVar, mTech, mVP);
+		if(bullet->getActiveState())bullet->draw(mfxWVPVar, mTech, mVP);
     }
 }
 

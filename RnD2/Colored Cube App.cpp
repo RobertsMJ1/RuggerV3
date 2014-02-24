@@ -22,6 +22,7 @@
 #include "gameError.h"
 #include "Player.h"
 #include "Bullet.h"
+#include "Gravball.h"
 
 namespace gameNS {
 	const int NUM_WALLS = 9;
@@ -59,6 +60,7 @@ private:
 
 	Wall walls[gameNS::NUM_WALLS];
 	//Wall perimeter[4];
+	Gravball gravball;
 
 	float spinAmount;
 
@@ -139,7 +141,7 @@ void ColoredCubeApp::initApp()
 	pBullet.init(&brick, 2.0f, Vector3(0,0,0), Vector3(0,0,0), 0, 1);
 	player.init(&mBox, &pBullet, sqrt(2.0f), Vector3(0,0,0), Vector3(0,0,0), 0, 1);
 	//test.init(&mBox, sqrt(2.0f), Vector3(10, 0, 10), Vector3(0, 0, 0), 0, 1);
-	
+	gravball.init(&mBox, &pBullet, sqrt(2.0f), Vector3(10, 0, 10), Vector3(0,0,0), 0, 1);
 	//Initializing the walls' position is completely arbitrary and base on trial-and-error
 	walls[0].init(&brick, 2.0f, Vector3(-35,0,-35), 1.0f, 15, 2, 15);
 	walls[1].init(&brick, 2.0f, Vector3(-35,0,15), 1.0f, 2, 2, 35);
@@ -174,7 +176,7 @@ void ColoredCubeApp::updateScene(float dt)
 	if(input->isKeyDown(VK_DOWN)) player.shoot(Vector3(-1, 0, 0));
 	if(input->isKeyDown(VK_LEFT)) player.shoot(Vector3(0, 0, 1));
 	if(input->isKeyDown(VK_RIGHT)) player.shoot(Vector3(0, 0, -1));
-
+	gravball.update(dt);
 	//test.update(dt);
 	player.setSpeed(20);
 	player.setVelocity(moveCube() * player.getSpeed());
@@ -281,9 +283,9 @@ void ColoredCubeApp::drawScene()
 	////draw the boxes
 	//test.draw(mfxWVPVar, mTech, &mVP);
 	player.draw(mfxWVPVar, mTech, &mVP);
-	pBullet.draw(mfxWVPVar, mTech, &mVP);
+	//pBullet.draw(mfxWVPVar, mTech, &mVP);
 	//Player & bullet classes implemented
-	
+	gravball.draw(mfxWVPVar, mTech, &mVP);
 	//gameObject1.draw(mfxWVPVar, mTech, &mVP);	
 
 	// We specify DT_NOCLIP, so we do not care about width/height of the rect.

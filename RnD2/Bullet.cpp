@@ -22,6 +22,7 @@ void Bullet::init(Box* b, float r, Vector3 pos, Vector3 vel, float sp, float s)
 	scale = s;
 	radiusSquared = radius * radius;
 	width = height = depth = scale;
+	mass = bulletNS::MASS;
 }
 
 void Bullet::draw(ID3D10EffectMatrixVariable* mfxWVPVar, ID3D10EffectTechnique* mTech, Matrix* mVP)
