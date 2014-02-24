@@ -15,7 +15,8 @@ public:
 	void update(float dt);
 
 	void shoot();
-	void rotateTargeting(int s);
+	void rotateTargeting(int s, float dt);
+	Vector3 getTargetVector(){return targetVector;}
 
 private:
 	float speed;
@@ -23,5 +24,6 @@ private:
 
 	Bullet* bullet;
 	Vector3 targetVector;
+	float theta;
 };
 
