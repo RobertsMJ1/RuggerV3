@@ -14,8 +14,10 @@
 #include "d3dUtil.h"
 #include "GameTimer.h"
 #include <string>
+#include <sstream>
 #include "input.h"
 #include "constants.h"
+#include "debugText.h"
 
 
 class D3DApp
@@ -71,6 +73,9 @@ protected:
 	D3DXCOLOR mClearColor;
 	int mClientWidth;
 	int mClientHeight;
+
+	
+	DebugText debugText;
 };
 
 

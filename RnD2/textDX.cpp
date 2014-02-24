@@ -34,7 +34,7 @@ TextDX::~TextDX()
 // Create DirectX Font
 //=============================================================================
 bool TextDX::initialize(D3DApp* d, int height, bool bold, bool italic, 
-                        const std::string &fontName)
+                        const std::string* fontName)
 {
     //graphics = g;                   // the graphics system
 	d3dApp = d;
@@ -47,8 +47,9 @@ bool TextDX::initialize(D3DApp* d, int height, bool bold, bool italic,
         DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, DEFAULT_QUALITY,
         DEFAULT_PITCH | FF_DONTCARE, fontName.c_str(),
         &dxFont))) return false;*/
-	LPCTSTR fontname = fontName;
-	D3DX10CreateFont(d3dApp->getDevice(), height, 0, weight, 1, true, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH || FF_DONTCARE, fontName.c_str(), &dxFont);
+	
+	LPCTSTR fontname = reinterpret_cast<LPCTSTR>(fontName);
+	D3DX10CreateFont(d3dApp->getDevice(), height, 0, weight, 1, true, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH || FF_DONTCARE, reinterpret_cast<LPCWSTR>(fontName), &dxFont);
     // Create the tranformation matrix
     D3DXMatrixTransformation2D(&matrix, NULL, 0.0f, NULL, NULL, 0.0f, NULL);
 
@@ -74,7 +75,7 @@ int TextDX::print(const std::string &str, int x, int y)
     // Setup matrix to rotate text by angle
     D3DXMatrixTransformation2D(&matrix, NULL, 0.0f, NULL, &rCenter, angle, NULL);
     // Tell the sprite about the matrix "Hello Neo"
-    graphics->getSprite()->SetTransform(&matrix);
+    d3dApp->getSprite()->SetTransform(&matrix);
     return dxFont->DrawTextA(graphics->getSprite(), str.c_str(), -1, &fontRect, DT_LEFT, color);
 }
 

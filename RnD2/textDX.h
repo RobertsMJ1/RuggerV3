@@ -16,7 +16,6 @@ class TextDX;
 #include "gameError.h"
 #include "constants.h"
 #include "d3dApp.h"
-//#include "graphics.h"
 
 
 class TextDX

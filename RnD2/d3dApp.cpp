@@ -4,6 +4,8 @@
 
 #include "d3dApp.h"
 #include <sstream>
+#include <string>
+using std::string;
 
 LRESULT CALLBACK
 MainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
@@ -118,9 +120,9 @@ void D3DApp::initApp()
     fontDesc.Italic          = false;
     fontDesc.CharSet         = DEFAULT_CHARSET;
     fontDesc.OutputPrecision = OUT_DEFAULT_PRECIS;
-    fontDesc.Quality         = DEFAULT_QUALITY;
+    fontDesc.Quality         = ANTIALIASED_QUALITY;
     fontDesc.PitchAndFamily  = DEFAULT_PITCH | FF_DONTCARE;
-    wcscpy(fontDesc.FaceName, L"Times New Roman");
+    wcscpy(fontDesc.FaceName, L"Arial Bold");
 
 	D3DX10CreateFontIndirect(md3dDevice, &fontDesc, &mFont);
 }
@@ -202,7 +204,10 @@ void D3DApp::updateScene(float dt)
 		outs.precision(6);
 		outs << L"FPS: " << fps << L"\n" 
 			 << "Milliseconds: Per Frame: " << mspf;
-		mFrameStats = outs.str();
+		
+		//debugText.funClear();
+
+		debugText.addLine("Test ", 5, 20);
 		
 		// Reset for next average.
 		frameCnt = 0;
@@ -465,5 +470,3 @@ void D3DApp::initDirect3D()
 	
 	onResize();
 }
-
-
