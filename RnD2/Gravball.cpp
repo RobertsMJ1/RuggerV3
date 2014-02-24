@@ -56,28 +56,28 @@ void Gravball::update(float dt)
 	//bullet->update(dt);
 
     // if either entity is not active then no gravity effect
-    if (!active || !bullet->getActiveState())
-        return;
+ //   if (!active || !bullet->getActiveState())
+ //       return;
 
-    float rr = pow((position.x - bullet->getPosition().x),2) + pow((position.z - bullet->getPosition().z),2);
-    float force = GRAVITY * mass * bullet->getMass()/rr;
+ //   float rr = pow((position.x - bullet->getPosition().x),2) + pow((position.z - bullet->getPosition().z),2);
+ //   float force = GRAVITY * mass * bullet->getMass()/rr;
 
-    // --- Using vector math to create gravity vector ---
-    // Create vector between entities
-    Vector3 gravityV(position.x - bullet->getPosition().x, 0, position.z - bullet->getPosition().z);
-    // Normalize the vector
-	Vector3 nGravityV(0,0,0);
-    D3DXVec3Normalize(&nGravityV, &gravityV);
-    // Multipy by force of gravity to create gravity vector
-    nGravityV *= force * dt;
-    // Add gravity vector to moving velocity vector to change direction
-	if(D3DXVec3LengthSq(&nGravityV) > pow(500.0, 2))
-	{
-		D3DXVECTOR3 *gravV = D3DXVec3Normalize(&nGravityV, &nGravityV);
-		//*gravV *= 500;
-		*gravV /= 2;
-		gravityV = *gravV;
-	}
-	
-	bullet->setVelocity(bullet->getVelocity() + gravityV * .9);
+ //   // --- Using vector math to create gravity vector ---
+ //   // Create vector between entities
+ //   Vector3 gravityV(position.x - bullet->getPosition().x, 0, position.z - bullet->getPosition().z);
+ //   // Normalize the vector
+	//Vector3 nGravityV(0,0,0);
+ //   D3DXVec3Normalize(&nGravityV, &gravityV);
+ //   // Multipy by force of gravity to create gravity vector
+ //   nGravityV *= force * dt;
+ //   // Add gravity vector to moving velocity vector to change direction
+	//if(D3DXVec3LengthSq(&nGravityV) > pow(500.0, 2))
+	//{
+	//	D3DXVECTOR3 *gravV = D3DXVec3Normalize(&nGravityV, &nGravityV);
+	//	//*gravV *= 500;
+	//	*gravV /= 2;
+	//	gravityV = *gravV;
+	//}
+	//
+	//bullet->setVelocity(bullet->getVelocity() + gravityV * .9);
 }

@@ -178,10 +178,15 @@ void ColoredCubeApp::updateScene(float dt)
 	Vector3 oldPos = player.getPosition();
 
 
-	if(input->isKeyDown(VK_UP)) player.shoot(Vector3(1, 0, 0));
-	if(input->isKeyDown(VK_DOWN)) player.shoot(Vector3(-1, 0, 0));
-	if(input->isKeyDown(VK_LEFT)) player.shoot(Vector3(0, 0, 1));
-	if(input->isKeyDown(VK_RIGHT)) player.shoot(Vector3(0, 0, -1));
+	//if(input->isKeyDown(VK_UP)) player.shoot();
+	//if(input->isKeyDown(VK_DOWN)) player.shoot();
+	if(input->isKeyDown(VK_LEFT)) {
+		player.rotateTargeting(0);
+	}
+	if(input->isKeyDown(VK_RIGHT)){
+		player.rotateTargeting(1);
+	}
+	if(input->isKeyDown(VK_SPACE)) player.shoot();
 	gravball.update(dt);
 	//test.update(dt);
 	player.setSpeed(20);

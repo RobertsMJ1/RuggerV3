@@ -26,6 +26,7 @@ void Player::init(Box* b, Bullet* bullet, float r, Vector3 pos, Vector3 vel, flo
 	width = s;
 	height = s;
 	depth = s;
+	targetVector = Vector3(1, 0, 0);
 }
 
 void Player::draw(ID3D10EffectMatrixVariable* mfxWVPVar, ID3D10EffectTechnique* mTech, Matrix* mVP)
@@ -35,6 +36,19 @@ void Player::draw(ID3D10EffectMatrixVariable* mfxWVPVar, ID3D10EffectTechnique* 
 	Matrix mWVP = world* (*mVP);
 	mfxWVPVar->SetMatrix((float*)&mWVP);
     D3D10_TECHNIQUE_DESC techDesc;
+    mTech->GetDesc( &techDesc );
+    for(UINT p = 0; p < techDesc.Passes; ++p)
+    {
+        mTech->GetPassByIndex( p )->Apply(0);
+        box->draw();
+		if(bullet->getActiveState())bullet->draw(mfxWVPVar, mTech, mVP);
+    }
+	Identity(&world);
+	D3DXMatrixScaling(&mScale, width/4.0, height/4.0, depth/4.0);
+	D3DXMatrixTranslation(&mTranslate, position.x + targetVector.x*2, position.y + targetVector.y*2, position.z + targetVector.z*2);
+	world = world*mScale*mTranslate;
+	mWVP = world* (*mVP);
+	mfxWVPVar->SetMatrix((float*)&mWVP);
     mTech->GetDesc( &techDesc );
     for(UINT p = 0; p < techDesc.Passes; ++p)
     {
@@ -55,7 +69,7 @@ void Player::update(float dt)
 	bullet->update(dt);
 }
 
-void Player::shoot(Vector3 direction)
+void Player::shoot()
 {
 	//If the player's got an active bullet on the level, he doesn't get to shoot
 	if(bullet->getActiveState() == true) return;
@@ -65,8 +79,34 @@ void Player::shoot(Vector3 direction)
 	
 	Vector3 nDir(0,0,0);
 	
-	D3DXVec3Normalize(&nDir, &direction);
+	D3DXVec3Normalize(&nDir, &targetVector);
 	nDir *= bulletNS::SPEED;
 	bullet->setVelocity(nDir);
 	bullet->setActive();
+}
+
+void Player::rotateTargeting(int s)
+{
+	//0 for rotating ccw, 1 for cw
+	Matrix rotate;
+	Identity(&rotate);
+	D3DXVECTOR4 tV(0, 0, 0, 0);
+	tV.x = targetVector.x;
+	tV.y = targetVector.y;
+	tV.z = targetVector.z;
+	switch(s)
+	{
+	case 0:
+		D3DXMatrixRotationY(&rotate, ToRadian(-0.5f));
+		D3DXVec4Transform(&tV, &tV, &rotate);
+		
+		break;
+	case 1:
+		D3DXMatrixRotationY(&rotate, ToRadian(0.5f));
+		D3DXVec4Transform(&tV, &tV, &rotate);
+		break;
+	}
+	targetVector.x = tV.x;
+	targetVector.y = tV.y;
+	targetVector.z = tV.z;
 }
