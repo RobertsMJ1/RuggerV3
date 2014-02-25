@@ -43,7 +43,7 @@ void Player::draw(ID3D10EffectMatrixVariable* mfxWVPVar, ID3D10EffectTechnique* 
         box->draw();
 		if(bullet->getActiveState())bullet->draw(mfxWVPVar, mTech, mVP);
     }
-	Identity(&world);
+	/*Identity(&world);
 	D3DXMatrixScaling(&mScale, width/4.0, height/4.0, depth/4.0);
 	D3DXMatrixTranslation(&mTranslate, position.x + targetVector.x*2, position.y + targetVector.y*2, position.z + targetVector.z*2);
 	world = world*mScale*mTranslate;
@@ -55,7 +55,7 @@ void Player::draw(ID3D10EffectMatrixVariable* mfxWVPVar, ID3D10EffectTechnique* 
         mTech->GetPassByIndex( p )->Apply(0);
         box->draw();
 		if(bullet->getActiveState())bullet->draw(mfxWVPVar, mTech, mVP);
-    }
+    }*/
 }
 
 void Player::update(float dt)
@@ -69,7 +69,7 @@ void Player::update(float dt)
 	bullet->update(dt);
 }
 
-void Player::shoot()
+void Player::shoot(int direction)
 {
 	//If the player's got an active bullet on the level, he doesn't get to shoot
 	if(bullet->getActiveState() == true) return;
@@ -77,10 +77,36 @@ void Player::shoot()
 	bullet->setPosition(position);
 	bullet->setSpeed(bulletNS::SPEED);
 	
-	Vector3 nDir(0,0,0);
-	
-	D3DXVec3Normalize(&nDir, &targetVector);
-	nDir *= bulletNS::SPEED;
+	Vector3 nDir;
+	if (direction == UP) {
+		nDir = Vector3(1,0,0);
+		if (this->getVelocity().z > 0) nDir.z = 1;
+		if (this->getVelocity().z < 0) nDir.z = -1;
+		nDir.x *= bulletNS::SPEED;
+		nDir.z *= this->getSpeed();
+	}
+	else if (direction == DOWN) {
+		nDir = Vector3(-1, 0, 0);
+		if (this->getVelocity().z > 0) nDir.z = 1;
+		if (this->getVelocity().z < 0) nDir.z = -1;
+		nDir.x *= bulletNS::SPEED;
+		nDir.z *= this->getSpeed();
+	}
+	else if (direction == LEFT) {
+		nDir = Vector3(0,0,1);
+		if (this->getVelocity().x > 0) nDir.x = 1;
+		if (this->getVelocity().x < 0) nDir.x = -1;
+		nDir.z *= bulletNS::SPEED;
+		nDir.x *= this->getSpeed();
+	}
+	else if (direction == RIGHT) {
+		nDir = Vector3(0,0,-1);
+		if (this->getVelocity().x > 0) nDir.x = 1;
+		if (this->getVelocity().x < 0) nDir.x = -1;
+		nDir.z *= bulletNS::SPEED;
+		nDir.x *= this->getSpeed();
+	}
+
 	bullet->setVelocity(nDir);
 	bullet->setActive();
 }

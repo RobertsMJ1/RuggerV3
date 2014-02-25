@@ -14,7 +14,7 @@ public:
 	void draw(ID3D10EffectMatrixVariable* mfxWVPVar, ID3D10EffectTechnique* mTech, Matrix* mVP);
 	void update(float dt);
 
-	void shoot();
+	void shoot(int direction);
 	void rotateTargeting(int s);
 
 private:

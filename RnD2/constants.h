@@ -35,6 +35,10 @@ const UCHAR KEY_S   = 'S';
     ((COLOR_ARGB)((((a)&0xff)<<24)|(((r)&0xff)<<16)|(((g)&0xff)<<8)|((b)&0xff)))
 #define LP_DXFONT   LPD3DX10FONT
 
+#define UP 1
+#define DOWN 2
+#define LEFT 3
+#define RIGHT 4
 
 //**********AUDIO**********//
 

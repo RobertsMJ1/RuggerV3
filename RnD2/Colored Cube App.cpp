@@ -62,7 +62,7 @@ namespace colorNS
 }
 
 namespace gameNS {
-	const int NUM_WALLS = 19;
+	const int NUM_WALLS = 23;
 	const int PERIMETER = 4;
 	const int NUM_CAMS = 2;
 }
@@ -213,14 +213,17 @@ void ColoredCubeApp::initApp()
 	walls[9].init(&brick, 2.0f, Vector3(0,0, 74),	1, 1,	2,  26);
 	walls[10].init(&brick, 2.0f, Vector3(-5,0, 12),	1, 25,	2,  1);
 	walls[11].init(&brick, 2.0f, Vector3(28.5,0, 0),1,21.5,2,  1);
-	walls[12].init(&brick, 2.0f, Vector3(0.5,0, -40), 1, 1,	2,  40);
+	walls[12].init(&brick, 2.0f, Vector3(0.5,0, -37), 1, 1,	2,  37);
 	walls[13].init(&brick, 2.0f, Vector3(20,0, 40), 1, 1,	2,  40);
 	walls[14].init(&brick, 2.0f, Vector3(50,0, 80), 1, 30,	2,  1);
 	walls[15].init(&brick, 2.0f, Vector3(75,0, 60), 1, 25,	2,  1);
 	walls[16].init(&brick, 2.0f, Vector3(50,0, 40), 1, 30,	2,  1);
 	walls[17].init(&brick, 2.0f, Vector3(75,0, 20), 1, 25,	2,  1);
 	walls[18].init(&brick, 2.0f, Vector3(50,0, 10), 1, 30,	2,  1);
-	//walls[19].init(&brick, 2.0f, Vector3(75,0, 70), 1, 25,	2,  1);
+	walls[19].init(&brick, 2.0f, Vector3(80,0, 0), 1, 20,	2,  1);
+	walls[20].init(&brick, 2.0f, Vector3(48.5,0, -30), 1, 1,	2,  30);
+	walls[21].init(&brick, 2.0f, Vector3(60,0, -22.5), 1, 1,	2,  23);
+	walls[22].init(&brick, 2.0f, Vector3(60,0, -60), 1, 11.5,2,  1);
 
 
 	for(int i=0; i<gameNS::NUM_CAMS; i++)
@@ -250,24 +253,20 @@ void ColoredCubeApp::updateScene(float dt)
 	D3DApp::updateScene(dt);
 	Vector3 oldPos = player.getPosition();
 
-	//if(input->isKeyDown(VK_UP)) player.shoot();
-	//if(input->isKeyDown(VK_DOWN)) player.shoot();
-	if(input->isKeyDown(VK_LEFT)) {
-		player.rotateTargeting(0);
-	}
-	if(input->isKeyDown(VK_RIGHT)){
-		player.rotateTargeting(1);
-	}
-	if(input->isKeyDown(VK_SPACE)){ 
+	if(input->isKeyDown(VK_UP)) player.shoot(UP);
+	if(input->isKeyDown(VK_DOWN)) player.shoot(DOWN);
+	if(input->isKeyDown(VK_LEFT)) player.shoot(LEFT);
+	if(input->isKeyDown(VK_RIGHT)) player.shoot(RIGHT);
+	/*if(input->isKeyDown(VK_SPACE)){ 
 		if(shotTimer == 0){
 			audio->playCue(PLAYER_FIRE);
 			shotTimer = 1;
 			player.shoot();
 		}
-	}
+	}*/
 	//gravball.update(dt);
 	//test.update(dt);
-	player.setSpeed(50); //20 was normal
+	player.setSpeed(20); //20 was normal
 	player.setVelocity(moveCube() * player.getSpeed());
 	player.update(dt);
 	//if(player.collided(&test))
