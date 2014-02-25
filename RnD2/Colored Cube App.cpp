@@ -271,6 +271,10 @@ void ColoredCubeApp::updateScene(float dt)
 	if(input->isKeyDown(VK_DOWN)) player.shoot(DOWN);
 	if(input->isKeyDown(VK_LEFT)) player.shoot(LEFT);
 	if(input->isKeyDown(VK_RIGHT)) player.shoot(RIGHT);
+	if(input->isKeyDown(VK_SHIFT)) {
+		player.setSpeed(40);
+	}
+	else player.setSpeed(20); //20 was normal
 	/*if(input->isKeyDown(VK_SPACE)){ 
 		if(shotTimer == 0){
 			audio->playCue(PLAYER_FIRE);
@@ -280,7 +284,7 @@ void ColoredCubeApp::updateScene(float dt)
 	}*/
 	//gravball.update(dt);
 	//test.update(dt);
-	player.setSpeed(20); //20 was normal
+	
 	player.setVelocity(moveCube() * player.getSpeed());
 	player.update(dt);
 	//if(player.collided(&test))
@@ -339,6 +343,7 @@ void ColoredCubeApp::updateScene(float dt)
 		{
 			enemyCam[i].setInActive();
 			audio->playCue(HIT);
+			pBullet.setInActive();
 			score++;
 		}
 		
