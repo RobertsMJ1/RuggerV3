@@ -279,11 +279,11 @@ void ColoredCubeApp::updateScene(float dt)
 	//gameObject3.update(dt);
 	//spinner.update(dt);
 	xLine.update(dt);
-	xLine.setPosition(player.getPosition());
+	//xLine.setPosition(player.getPosition());
 	yLine.update(dt);
-	yLine.setPosition(player.getPosition());
+	//yLine.setPosition(player.getPosition());
 	zLine.update(dt);
-	zLine.setPosition(player.getPosition());
+	//zLine.setPosition(player.getPosition());
 	//wall.update(dt);
 	//quad1.update(dt);
 
