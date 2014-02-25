@@ -46,7 +46,7 @@ void cameraObject::init(Box *b, Bullet* bull, float r, Vector3 pos, Vector3 vel,
 	bullet = bull;
 }
 
-void cameraObject::update(float dt)
+void cameraObject::update(float dt, GameObject* player)
 {
 	//position += velocity*dt;
 	Identity(&world);
@@ -55,19 +55,27 @@ void cameraObject::update(float dt)
 	Matrix rotate;
 	Matrix point;
 
+	Vector3 aimVec = player->getPosition() - position;
 	Scale(&scale, 1, 1, 1.5);
-	if (ToRadian(spinAmount*40)< initialRotation+PI/4.0){
-		motionHinge = 1;
-	}
-	if (ToRadian(spinAmount*40)> initialRotation+PI*3.0/4.0){
-		motionHinge = -1;
-	}
-	spinAmount += dt/1.50 * motionHinge;
+
+	//if (ToDegree(spinAmount*40)< tan(aimVec.x/aimVec.z)){
+	//	motionHinge = 1;
+	//}
+	//if (ToDegree(spinAmount*40)> tan(aimVec.x/aimVec.z)){
+	//	motionHinge = -1;
+	//}
+	//if (ToDegree(spinAmount*40) == tan(aimVec.x/aimVec.z)){
+	//	motionHinge = 0;
+	//}
+	float fun = 0;
+		fun = atan(tan(aimVec.x/aimVec.z));
+	//fun = ToDegree(fun);
+	/*spinAmount += dt*10 * motionHinge;*/
 	RotateZ(&point, ToDegree(-30));
-	RotateY(&rotate, ToRadian(spinAmount*40));
+	RotateY(&rotate, fun);
 	
 	Translate(&translate, position.x, position.y, position.z);
-	world = scale * rotate * point * translate;
+	world = scale * rotate /* point*/ * translate;
 }
 
 void cameraObject::shoot(GameObject* player)

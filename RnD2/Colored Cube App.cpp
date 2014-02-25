@@ -228,8 +228,8 @@ void ColoredCubeApp::initApp()
 		enBullet[i].init(&eBulletBox, 2.0f, Vector3(0,0,0), Vector3(0,0,0), bulletNS::SPEED, 1);
 		enemyTimer[i]= 0;
 	}
-	enemyCam[0].init(&camBox, &enBullet[0], 2.0f, Vector3(5,0,45), Vector3(0,0,0), PI/4, 0, 1);
-	enemyCam[1].init(&camBox, &enBullet[1], 2.0f, Vector3(45,0,-45), Vector3(0,0,0), -PI/4, 0, 1);
+	enemyCam[0].init(&camBox, &enBullet[0], 2.0f, Vector3(5,0,45), Vector3(0,0,0), 0, 0, 1);
+	enemyCam[1].init(&camBox, &enBullet[1], 2.0f, Vector3(45,0,-45), Vector3(0,0,0), 0, 0, 1);
 
 	shotTimer = 0;
 	buildFX();
@@ -317,7 +317,7 @@ void ColoredCubeApp::updateScene(float dt)
 			enemyCam[i].setInActive();
 			audio->playCue(HIT);
 		}
-		enemyCam[i].update(dt);
+		enemyCam[i].update(dt, &player);
 		enemyCam[i].shoot(&player);
 		if(enemyCam[i].getActiveState()){
 			if(enemyTimer[i]==0)

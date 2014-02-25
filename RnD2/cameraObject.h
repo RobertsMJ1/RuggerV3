@@ -22,8 +22,7 @@ public:
 
 	void init(Box *b, Bullet* bull, float r, Vector3 pos, Vector3 vel, float initRot, float sp, float s);
 	void draw(ID3D10EffectMatrixVariable* mfxWVPVar, ID3D10EffectTechnique* mTech, Matrix* mVP);
-	void update(float dt);
-
+	void update(float dt, GameObject* player);
 	void shoot(GameObject* player);
 	bool canShoot(){return bullet->getActiveState();}
 	//void setPosition (Vector3 pos) {position = pos;}
