@@ -62,7 +62,7 @@ namespace colorNS
 }
 
 namespace gameNS {
-	const int NUM_WALLS = 9;
+	const int NUM_WALLS = 19;
 	const int PERIMETER = 4;
 	const int NUM_CAMS = 2;
 }
@@ -178,7 +178,7 @@ void ColoredCubeApp::initApp()
 	bulletBox.init(md3dDevice, 0.5f, BEACH_SAND);
 	eBulletBox.init(md3dDevice, 0.5f, RED);
 	//redBox.init(md3dDevice, 0.00001f, RED);
-	yellowGreenBox.init(md3dDevice, 0.5f, LIGHT_YELLOW_GREEN);
+	yellowGreenBox.init(md3dDevice, 1.f, LIGHT_YELLOW_GREEN);
 	rLine.init(md3dDevice, 10.0f, RED);
 	bLine.init(md3dDevice, 10.0f, BLACK);
 	gLine.init(md3dDevice, 10.0f, GREEN);
@@ -190,28 +190,39 @@ void ColoredCubeApp::initApp()
 	yLine.setRotationZ(ToRadian(90));
 	zLine.init(&gLine, Vector3(0,0,0), 5);
 	zLine.setPosition(Vector3(0,0,0));
-	zLine.setRotationY(ToRadian(90));
+	zLine.setRotationY(ToRadian(90));	
 	
 	//floor.init(&yellowGreenBox, sqrt(2.0), Vector3(-5,-0.02,-5), Vector3(0,0,0), 0, 1);
-	floor.init(&yellowGreenBox, 2.0f, Vector3(0,-1.5,0), 1.0f, 100, 0.01, 100);
+	floor.init(&yellowGreenBox, 2.0f, Vector3(0,-1.5f,0), 1.0f, 100, 0.01, 100);
 	pBullet.init(&bulletBox, 2.0f, Vector3(0,0,0), Vector3(0,0,0), 0, 1);
-	player.init(&mBox, &pBullet, sqrt(2.0f), Vector3(0,0,0), Vector3(0,0,0), 0, 1);
+	player.init(&mBox, &pBullet, sqrt(2.0f), Vector3(-90,0,85), Vector3(0,0,0), 0, 1);
 	//test.init(&mBox, sqrt(2.0f), Vector3(10, 0, 10), Vector3(0, 0, 0), 0, 1);
 	//gravball.init(&mBox, &pBullet, sqrt(2.0f), Vector3(10, 0, 10), Vector3(0,0,0), 0, 1);
 	//Initializing the walls' position is completely arbitrary and base on trial-and-error
 	
-//				   geom,  radius,  position,	 scale, w, h, d
-	walls[0].init(&brick, 2.0f, Vector3(0, 0, 50), 1, 50, 10, 1);
-	walls[1].init(&brick, 2.0f, Vector3(-50, 0, 0), 1, 1, 2, 50);//Camera-side wall
-	walls[2].init(&brick, 2.0f, Vector3(50, 0, 0), 1, 1, 10, 50);
-	walls[3].init(&brick, 2.0f, Vector3(0, 0, -50), 1, 50, 10, 1);
-	walls[4].init(&brick, 2.0f, Vector3(-35,0,-35), 1.0f, 15, 2, 15);
-	walls[5].init(&brick, 2.0f, Vector3(-35,0,15), 1.0f, 2, 2, 35);
-	walls[6].init(&brick, 2.0f, Vector3(-15,0,25), 1.0f, 2, 2, 25);
-	walls[7].init(&brick, 2.0f, Vector3(25,0,0), 1.0f, 20, 2, 2);
-	walls[8].init(&brick, 2.0f, Vector3(5,0,-13), 1.0f, 2, 2, 15);
-	
-	
+//				   geom,  rad,  position,			sc,	w,  h,  d
+	walls[0].init(&brick, 2.0f, Vector3(0, 0, 100),	1, 100, 10, 1);
+	walls[1].init(&brick, 2.0f, Vector3(0, 0, -100),1, 100, 10, 1);
+	walls[2].init(&brick, 2.0f, Vector3(100, 0, 0), 1, 1,	10, 100);
+	walls[3].init(&brick, 2.0f, Vector3(-100, 0, 0),1, 1,	2, 100);
+	walls[4].init(&brick, 2.0f, Vector3(-80,0,75),	1, 1,	2,	25);
+	walls[5].init(&brick, 2.0f, Vector3(-80,0,25),	1, 20,	2,	1);
+	walls[6].init(&brick, 2.0f, Vector3(-53.5,0,0),	1, 46.5,2,	1);
+	walls[7].init(&brick, 2.0f, Vector3(-30,0, 25),	1, 1,	2,  25);
+	walls[8].init(&brick, 2.0f, Vector3(-10,0, 50),	1, 10,	2,  1);
+	walls[9].init(&brick, 2.0f, Vector3(0,0, 74),	1, 1,	2,  26);
+	walls[10].init(&brick, 2.0f, Vector3(-5,0, 12),	1, 25,	2,  1);
+	walls[11].init(&brick, 2.0f, Vector3(28.5,0, 0),1,21.5,2,  1);
+	walls[12].init(&brick, 2.0f, Vector3(0.5,0, -40), 1, 1,	2,  40);
+	walls[13].init(&brick, 2.0f, Vector3(20,0, 40), 1, 1,	2,  40);
+	walls[14].init(&brick, 2.0f, Vector3(50,0, 80), 1, 30,	2,  1);
+	walls[15].init(&brick, 2.0f, Vector3(75,0, 60), 1, 25,	2,  1);
+	walls[16].init(&brick, 2.0f, Vector3(50,0, 40), 1, 30,	2,  1);
+	walls[17].init(&brick, 2.0f, Vector3(75,0, 20), 1, 25,	2,  1);
+	walls[18].init(&brick, 2.0f, Vector3(50,0, 10), 1, 30,	2,  1);
+	//walls[19].init(&brick, 2.0f, Vector3(75,0, 70), 1, 25,	2,  1);
+
+
 	for(int i=0; i<gameNS::NUM_CAMS; i++)
 	{
 		enBullet[i].init(&eBulletBox, 2.0f, Vector3(0,0,0), Vector3(0,0,0), bulletNS::SPEED, 1);
@@ -247,7 +258,7 @@ void ColoredCubeApp::updateScene(float dt)
 	if(input->isKeyDown(VK_SPACE)) player.shoot();
 	//gravball.update(dt);
 	//test.update(dt);
-	player.setSpeed(20);
+	player.setSpeed(50); //20 was normal
 	player.setVelocity(moveCube() * player.getSpeed());
 	player.update(dt);
 	//if(player.collided(&test))
