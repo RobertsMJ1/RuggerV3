@@ -5,9 +5,13 @@
 //#include "d3dUtil.h"
 #include "d3dUtil.h"
 #include "Box.h"
-#include "gameObject.h"
+#include "GameObject.h"
 #include "constants.h"
-#include "gameobject.h"
+#include "Bullet.h"
+
+namespace cameraNS {
+	const float RANGE = 35;
+}
 
 class cameraObject : public GameObject
 {
@@ -16,9 +20,11 @@ public:
 	cameraObject();
 	~cameraObject();
 
-	void init(Box *b, float r, Vector3 pos, Vector3 vel, float initRot, float sp, float s);
+	void init(Box *b, Bullet* bull, float r, Vector3 pos, Vector3 vel, float initRot, float sp, float s);
 	void draw(ID3D10EffectMatrixVariable* mfxWVPVar, ID3D10EffectTechnique* mTech, Matrix* mVP);
 	void update(float dt);
+
+	void shoot(GameObject* player);
 
 	//void setPosition (Vector3 pos) {position = pos;}
 	//Vector3 getPosition() {return position;}
@@ -53,6 +59,7 @@ private:
 	//float scale;
 	//int piece;
 	//ID3D10EffectTechnique* mTech;
+	Bullet* bullet;
 
 	/*ADDED BY ANDREW */
 	float spinAmount;

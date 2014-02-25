@@ -93,20 +93,16 @@ private:
 	void buildVertexLayouts();
  
 private:
-	//Quad quad1;
 	Line rLine, bLine, gLine;
-	Box mBox, redBox, brick, camBox, bulletBox, yellowGreenBox;
-	//GameObject gameObject1/*, gameObject2, gameObject3, spinner, nuBox*/;
+	Box mBox, redBox, brick, camBox, bulletBox, eBulletBox, yellowGreenBox;
 	Player player;
 	Bullet pBullet;
-	//GameObject test;
 	LineObject xLine, yLine, zLine;
-	//Wall wall;
-	//GameObject wall1[50], wall2[50], wall3[50], wall4[50];
 
 	Wall walls[gameNS::NUM_WALLS];
 	cameraObject enemyCam[gameNS::NUM_CAMS];
-	Gravball gravball;
+	Bullet enBullet[gameNS::NUM_CAMS];
+	//Gravball gravball;
 	GameObject floor;
 
 	float spinAmount;
@@ -179,6 +175,7 @@ void ColoredCubeApp::initApp()
 	brick.init(md3dDevice, 1.0f, DARKBROWN);
 	camBox.init(md3dDevice, 1.0f, BLACK);
 	bulletBox.init(md3dDevice, 0.5f, BEACH_SAND);
+	eBulletBox.init(md3dDevice, 0.5f, RED);
 	//redBox.init(md3dDevice, 0.00001f, RED);
 	yellowGreenBox.init(md3dDevice, 0.5f, LIGHT_YELLOW_GREEN);
 	rLine.init(md3dDevice, 10.0f, RED);
@@ -198,7 +195,7 @@ void ColoredCubeApp::initApp()
 	pBullet.init(&bulletBox, 2.0f, Vector3(0,0,0), Vector3(0,0,0), 0, 1);
 	player.init(&mBox, &pBullet, sqrt(2.0f), Vector3(0,0,0), Vector3(0,0,0), 0, 1);
 	//test.init(&mBox, sqrt(2.0f), Vector3(10, 0, 10), Vector3(0, 0, 0), 0, 1);
-	gravball.init(&mBox, &pBullet, sqrt(2.0f), Vector3(10, 0, 10), Vector3(0,0,0), 0, 1);
+	//gravball.init(&mBox, &pBullet, sqrt(2.0f), Vector3(10, 0, 10), Vector3(0,0,0), 0, 1);
 	//Initializing the walls' position is completely arbitrary and base on trial-and-error
 	walls[0].init(&brick, 2.0f, Vector3(-35,0,-35), 1.0f, 15, 2, 15);
 	walls[1].init(&brick, 2.0f, Vector3(-35,0,15), 1.0f, 2, 2, 35);
@@ -210,8 +207,12 @@ void ColoredCubeApp::initApp()
 	walls[7].init(&brick, 2.0f, Vector3(50, 0, 0), 1, 1, 10, 50);
 	walls[8].init(&brick, 2.0f, Vector3(0, 0, -50), 1, 50, 10, 1);
 	
-	enemyCam[0].init(&camBox, 2.0f, Vector3(3,0,0), Vector3(0,0,0), PI/4, 0, 1);
-	enemyCam[1].init(&camBox, 2.0f, Vector3(3,0,-4), Vector3(0,0,0), -PI/4, 0, 1);
+	for(int i=0; i<gameNS::NUM_CAMS; i++)
+	{
+		enBullet[i].init(&eBulletBox, 2.0f, Vector3(0,0,0), Vector3(0,0,0), bulletNS::SPEED, 1);
+	}
+	enemyCam[0].init(&camBox, &enBullet[0], 2.0f, Vector3(5,0,45), Vector3(0,0,0), PI/4, 0, 1);
+	enemyCam[1].init(&camBox, &enBullet[1], 2.0f, Vector3(45,0,-45), Vector3(0,0,0), -PI/4, 0, 1);
 	buildFX();
 	buildVertexLayouts();
 }
@@ -239,7 +240,7 @@ void ColoredCubeApp::updateScene(float dt)
 		player.rotateTargeting(1);
 	}
 	if(input->isKeyDown(VK_SPACE)) player.shoot();
-	gravball.update(dt);
+	//gravball.update(dt);
 	//test.update(dt);
 	player.setSpeed(20);
 	player.setVelocity(moveCube() * player.getSpeed());
@@ -262,6 +263,13 @@ void ColoredCubeApp::updateScene(float dt)
 		if(pBullet.collided(&walls[i]))
 		{
 			pBullet.setInActive();
+		}
+		for(int j=0; j<gameNS::NUM_CAMS; j++)
+		{
+			if(enBullet[j].collided(&walls[i])) 
+			{
+				enBullet[j].setInActive();
+			}
 		}
 	}
 	
@@ -286,11 +294,12 @@ void ColoredCubeApp::updateScene(float dt)
 			enemyCam[i].setInActive();
 		}
 		enemyCam[i].update(dt);
+		enemyCam[i].shoot(&player);
+		enBullet[i].update(dt);
 	}
 	//spinAmount += dt ;
 	//if (ToRadian(spinAmount*40)>2*PI)
 	//	spinAmount = 0;
-
 	//Build the view matrix.
 	//D3DXVECTOR3 pos(-100.0f,100.0f,50.0f);
 	//D3DXVECTOR3 pos(-50.0f, 150.0f, 0.0f);
@@ -344,13 +353,16 @@ void ColoredCubeApp::drawScene()
 	player.draw(mfxWVPVar, mTech, &mVP);
 	//pBullet.draw(mfxWVPVar, mTech, &mVP);
 	//Player & bullet classes implemented
-	gravball.draw(mfxWVPVar, mTech, &mVP);
+	//gravball.draw(mfxWVPVar, mTech, &mVP);
 	//gameObject1.draw(mfxWVPVar, mTech, &mVP);	
 
 	/*****************************************
 	Enemy Cameras
 	*******************************************/
-	for(int i=0; i<gameNS::NUM_CAMS; i++)enemyCam[i].draw(mfxWVPVar, mTech, &mVP);
+	for(int i=0; i<gameNS::NUM_CAMS; i++){
+		enemyCam[i].draw(mfxWVPVar, mTech, &mVP);
+		enBullet[i].draw(mfxWVPVar, mTech, &mVP);
+	}
 
 	// We specify DT_NOCLIP, so we do not care about width/height of the rect.
 	RECT R = {5, 5, 0, 0};

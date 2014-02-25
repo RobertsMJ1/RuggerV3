@@ -28,7 +28,7 @@ void cameraObject::draw(ID3D10EffectMatrixVariable* mfxWVPVar, ID3D10EffectTechn
 	}
 }
 
-void cameraObject::init(Box *b, float r, Vector3 pos, Vector3 vel, float initRot, float sp, float s)
+void cameraObject::init(Box *b, Bullet* bull, float r, Vector3 pos, Vector3 vel, float initRot, float sp, float s)
 {
 	box = b;
 	radius = r;
@@ -43,6 +43,7 @@ void cameraObject::init(Box *b, float r, Vector3 pos, Vector3 vel, float initRot
 	width = s;
 	height = s;
 	depth = s;
+	bullet = bull;
 }
 
 void cameraObject::update(float dt)
@@ -67,4 +68,21 @@ void cameraObject::update(float dt)
 	
 	Translate(&translate, position.x, position.y, position.z);
 	world = scale * rotate * point * translate;
+}
+
+void cameraObject::shoot(GameObject* player)
+{
+	if(bullet->getActiveState() == true) return;
+	if(!active) return;
+	
+
+	bullet->setPosition(position);
+	Vector3 aimVec = player->getPosition() - position;
+
+	if(D3DXVec3Length(&aimVec) > cameraNS::RANGE) return;
+
+	D3DXVec3Normalize(&aimVec, &aimVec);
+
+	bullet->setVelocity(aimVec * bulletNS::SPEED);
+	bullet->setActive();
 }
