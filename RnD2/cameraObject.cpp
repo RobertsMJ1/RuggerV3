@@ -72,7 +72,7 @@ void cameraObject::update(float dt)
 
 void cameraObject::shoot(GameObject* player)
 {
-	if(bullet->getActiveState() == true) return;
+	if(canShoot()) return;
 	if(!active) return;
 	
 
@@ -85,4 +85,5 @@ void cameraObject::shoot(GameObject* player)
 
 	bullet->setVelocity(aimVec * bulletNS::SPEED);
 	bullet->setActive();
+	
 }

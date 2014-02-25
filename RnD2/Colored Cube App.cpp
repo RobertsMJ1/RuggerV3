@@ -99,7 +99,6 @@ private:
 	Player player;
 	Bullet pBullet;
 	LineObject xLine, yLine, zLine;
-
 	Wall walls[gameNS::NUM_WALLS];
 	cameraObject enemyCam[gameNS::NUM_CAMS];
 	Bullet enBullet[gameNS::NUM_CAMS];
@@ -107,7 +106,8 @@ private:
 	Wall floor;
 
 	float spinAmount;
-
+	int shotTimer;
+	int enemyTimer[gameNS::NUM_CAMS];
 	ID3D10Effect* mFX;
 	ID3D10EffectTechnique* mTech;
 	ID3D10InputLayout* mVertexLayout;
@@ -226,9 +226,12 @@ void ColoredCubeApp::initApp()
 	for(int i=0; i<gameNS::NUM_CAMS; i++)
 	{
 		enBullet[i].init(&eBulletBox, 2.0f, Vector3(0,0,0), Vector3(0,0,0), bulletNS::SPEED, 1);
+		enemyTimer[i]= 0;
 	}
 	enemyCam[0].init(&camBox, &enBullet[0], 2.0f, Vector3(5,0,45), Vector3(0,0,0), PI/4, 0, 1);
 	enemyCam[1].init(&camBox, &enBullet[1], 2.0f, Vector3(45,0,-45), Vector3(0,0,0), -PI/4, 0, 1);
+
+	shotTimer = 0;
 	buildFX();
 	buildVertexLayouts();
 }
@@ -255,7 +258,13 @@ void ColoredCubeApp::updateScene(float dt)
 	if(input->isKeyDown(VK_RIGHT)){
 		player.rotateTargeting(1);
 	}
-	if(input->isKeyDown(VK_SPACE)) player.shoot();
+	if(input->isKeyDown(VK_SPACE)){ 
+		if(shotTimer == 0){
+			audio->playCue(PLAYER_FIRE);
+			shotTimer = 1;
+			player.shoot();
+		}
+	}
 	//gravball.update(dt);
 	//test.update(dt);
 	player.setSpeed(50); //20 was normal
@@ -272,13 +281,11 @@ void ColoredCubeApp::updateScene(float dt)
 		{
 			player.setPosition(oldPos);
 
-			//REMOVE AFTER TEST
-			audio->playCue(TEST_CUE);
-		  //
 		}
 		if(pBullet.collided(&walls[i]))
 		{
 			pBullet.setInActive();
+			shotTimer = 0;
 		}
 		for(int j=0; j<gameNS::NUM_CAMS; j++)
 		{
@@ -305,14 +312,22 @@ void ColoredCubeApp::updateScene(float dt)
 	for(int i=0; i<gameNS::NUM_WALLS; i++)walls[i].update(dt);
 	for(int i=0; i<gameNS::NUM_CAMS; i++)
 	{
-		if(pBullet.collided(&enemyCam[i]))
+		if(pBullet.collided(&enemyCam[i])&& enemyCam[i].getActiveState())
 		{
 			enemyCam[i].setInActive();
+			audio->playCue(HIT);
 		}
 		enemyCam[i].update(dt);
 		enemyCam[i].shoot(&player);
+		if(enemyCam[i].getActiveState()){
+			if(enemyTimer[i]==0)
+				audio->playCue(WOOP_WOOP);
+			enemyTimer[i] = 1;
+		}
+		if(!enemyCam[i].getActiveState())
+			enemyTimer[i] = 0;
 		enBullet[i].update(dt);
-	}
+		}
 	//spinAmount += dt ;
 	//if (ToRadian(spinAmount*40)>2*PI)
 	//	spinAmount = 0;

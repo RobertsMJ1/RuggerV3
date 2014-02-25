@@ -44,7 +44,10 @@ wchar_t const WAVE_BANK[]  = L"audio\\Win\\Wave Bank.xwb";
 wchar_t const SOUND_BANK[] = L"audio\\Win\\Sound Bank.xsb";
 
 //audio cues
-const char TEST_CUE[] = "oomph";
+const char PLAYER_FIRE[] = "oomph";
+const char HIT[] = "Alien Death Ray";
+const char WOOP_WOOP[] = "Woop Woop";
+
 //=============================================================================
 // Function templates for safely dealing with pointer referenced items.
 // The functions defined by these templates may be called using a normal

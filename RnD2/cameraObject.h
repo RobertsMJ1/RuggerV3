@@ -25,7 +25,7 @@ public:
 	void update(float dt);
 
 	void shoot(GameObject* player);
-
+	bool canShoot(){return bullet->getActiveState();}
 	//void setPosition (Vector3 pos) {position = pos;}
 	//Vector3 getPosition() {return position;}
 	//void setVelocity (Vector3 vel) {velocity = vel;}
