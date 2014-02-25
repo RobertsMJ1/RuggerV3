@@ -95,7 +95,7 @@ private:
 private:
 	//Quad quad1;
 	Line rLine, bLine, gLine;
-	Box mBox, redBox, brick, camBox, bulletBox;
+	Box mBox, redBox, brick, camBox, bulletBox, yellowGreenBox;
 	//GameObject gameObject1/*, gameObject2, gameObject3, spinner, nuBox*/;
 	Player player;
 	Bullet pBullet;
@@ -106,8 +106,8 @@ private:
 
 	Wall walls[gameNS::NUM_WALLS];
 	cameraObject enemyCam[gameNS::NUM_CAMS];
-	//Wall perimeter[4];
 	Gravball gravball;
+	GameObject floor;
 
 	float spinAmount;
 
@@ -180,6 +180,7 @@ void ColoredCubeApp::initApp()
 	camBox.init(md3dDevice, 1.0f, BLACK);
 	bulletBox.init(md3dDevice, 0.5f, BEACH_SAND);
 	//redBox.init(md3dDevice, 0.00001f, RED);
+	yellowGreenBox.init(md3dDevice, 0.5f, LIGHT_YELLOW_GREEN);
 	rLine.init(md3dDevice, 10.0f, RED);
 	bLine.init(md3dDevice, 10.0f, BLACK);
 	gLine.init(md3dDevice, 10.0f, GREEN);
@@ -193,6 +194,7 @@ void ColoredCubeApp::initApp()
 	zLine.setPosition(Vector3(0,0,0));
 	zLine.setRotationY(ToRadian(90));
 	
+	floor.init(&yellowGreenBox, sqrt(2.0), Vector3(-50,-0.02,-50), Vector3(0,0,0), 0, 1);
 	pBullet.init(&bulletBox, 2.0f, Vector3(0,0,0), Vector3(0,0,0), 0, 1);
 	player.init(&mBox, &pBullet, sqrt(2.0f), Vector3(0,0,0), Vector3(0,0,0), 0, 1);
 	//test.init(&mBox, sqrt(2.0f), Vector3(10, 0, 10), Vector3(0, 0, 0), 0, 1);
@@ -298,7 +300,7 @@ void ColoredCubeApp::updateScene(float dt)
 	D3DXVECTOR3 target(player.getPosition());
 	D3DXVECTOR3 up(0.0f, 1.0f, 0.0f);
 	D3DXMatrixLookAtLH(&mView, &pos, &target, &up);
-
+	floor.update(dt);
 }
 
 void ColoredCubeApp::drawScene()
@@ -338,6 +340,7 @@ void ColoredCubeApp::drawScene()
 
 	////draw the boxes
 	//test.draw(mfxWVPVar, mTech, &mVP);
+	floor.draw(mfxWVPVar, mTech, &mVP);
 	player.draw(mfxWVPVar, mTech, &mVP);
 	//pBullet.draw(mfxWVPVar, mTech, &mVP);
 	//Player & bullet classes implemented
