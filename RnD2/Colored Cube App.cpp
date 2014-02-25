@@ -198,15 +198,18 @@ void ColoredCubeApp::initApp()
 	//test.init(&mBox, sqrt(2.0f), Vector3(10, 0, 10), Vector3(0, 0, 0), 0, 1);
 	//gravball.init(&mBox, &pBullet, sqrt(2.0f), Vector3(10, 0, 10), Vector3(0,0,0), 0, 1);
 	//Initializing the walls' position is completely arbitrary and base on trial-and-error
-	walls[0].init(&brick, 2.0f, Vector3(-35,0,-35), 1.0f, 15, 2, 15);
-	walls[1].init(&brick, 2.0f, Vector3(-35,0,15), 1.0f, 2, 2, 35);
-	walls[2].init(&brick, 2.0f, Vector3(-15,0,25), 1.0f, 2, 2, 25);
-	walls[3].init(&brick, 2.0f, Vector3(25,0,0), 1.0f, 20, 2, 2);
-	walls[4].init(&brick, 2.0f, Vector3(5,0,-13), 1.0f, 2, 2, 15);
-	walls[5].init(&brick, 2.0f, Vector3(0, 0, 50), 1, 50, 10, 1);
-	walls[6].init(&brick, 2.0f, Vector3(-50, 0, 0), 1, 1, 2, 50);//Camera-side wall
-	walls[7].init(&brick, 2.0f, Vector3(50, 0, 0), 1, 1, 10, 50);
-	walls[8].init(&brick, 2.0f, Vector3(0, 0, -50), 1, 50, 10, 1);
+	
+//				   geom,  radius,  position,	 scale, w, h, d
+	walls[0].init(&brick, 2.0f, Vector3(0, 0, 50), 1, 50, 10, 1);
+	walls[1].init(&brick, 2.0f, Vector3(-50, 0, 0), 1, 1, 2, 50);//Camera-side wall
+	walls[2].init(&brick, 2.0f, Vector3(50, 0, 0), 1, 1, 10, 50);
+	walls[3].init(&brick, 2.0f, Vector3(0, 0, -50), 1, 50, 10, 1);
+	walls[4].init(&brick, 2.0f, Vector3(-35,0,-35), 1.0f, 15, 2, 15);
+	walls[5].init(&brick, 2.0f, Vector3(-35,0,15), 1.0f, 2, 2, 35);
+	walls[6].init(&brick, 2.0f, Vector3(-15,0,25), 1.0f, 2, 2, 25);
+	walls[7].init(&brick, 2.0f, Vector3(25,0,0), 1.0f, 20, 2, 2);
+	walls[8].init(&brick, 2.0f, Vector3(5,0,-13), 1.0f, 2, 2, 15);
+	
 	
 	for(int i=0; i<gameNS::NUM_CAMS; i++)
 	{
