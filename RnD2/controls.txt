@@ -1,0 +1,3 @@
+WASD - Move
+up/down/left/right - shoot
+shift - sprint
