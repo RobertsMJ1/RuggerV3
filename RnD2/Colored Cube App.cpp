@@ -63,9 +63,9 @@ namespace colorNS
 }
 
 namespace gameNS {
-	const int NUM_WALLS = 23;
+	const int NUM_WALLS = 41;
 	const int PERIMETER = 4;
-	const int NUM_CAMS = 2;
+	const int NUM_CAMS = 3;
 	const int NUM_MONEY = 100;
 }
 
@@ -98,7 +98,7 @@ private:
  
 private:
 	Line rLine, bLine, gLine;
-	Box mBox, redBox, brick, camBox, bulletBox, eBulletBox, yellowGreenBox, goldBox;
+	Box mBox, redBox, brick, camBox, bulletBox, eBulletBox, yellowGreenBox, goldBox, blueBox;
 	Player player;
 	Bullet pBullet;
 	LineObject xLine, yLine, zLine;
@@ -188,6 +188,7 @@ void ColoredCubeApp::initApp()
 	//redBox.init(md3dDevice, 0.00001f, RED);
 	yellowGreenBox.init(md3dDevice, 1.f, LIGHT_YELLOW_GREEN);
 	goldBox.init(md3dDevice, 1.0f, YELLOW);
+	blueBox.init(md3dDevice, 2.0f, BLUE);
 	rLine.init(md3dDevice, 10.0f, RED);
 	bLine.init(md3dDevice, 10.0f, BLACK);
 	gLine.init(md3dDevice, 10.0f, GREEN);
@@ -205,6 +206,7 @@ void ColoredCubeApp::initApp()
 	floor.init(&yellowGreenBox, 2.0f, Vector3(0,-1.5f,0), 1.0f, 100, 0.01, 100);
 	pBullet.init(&bulletBox, 2.0f, Vector3(0,0,0), Vector3(0,0,0), 0, 1);
 	player.init(&mBox, &pBullet, sqrt(2.0f), Vector3(-90,0,85), Vector3(0,0,0), 0, 1);
+	//player.init(&mBox, &pBullet, sqrt(2.0f), Vector3(-5,0,0), Vector3(0,0,0), 0, 1);
 	//test.init(&mBox, sqrt(2.0f), Vector3(10, 0, 10), Vector3(0, 0, 0), 0, 1);
 	//gravball.init(&mBox, &pBullet, sqrt(2.0f), Vector3(10, 0, 10), Vector3(0,0,0), 0, 1);
 	//Initializing the walls' position is completely arbitrary and base on trial-and-error
@@ -232,8 +234,25 @@ void ColoredCubeApp::initApp()
 	walls[19].init(&brick, 2.0f, Vector3(80,0, 0), 1, 20,	2,  1);
 	walls[20].init(&brick, 2.0f, Vector3(48.5,0, -30), 1, 1,	2,  30);
 	walls[21].init(&brick, 2.0f, Vector3(60,0, -22.5), 1, 1,	2,  23);
-	walls[22].init(&brick, 2.0f, Vector3(60,0, -60), 1, 11.5,2,  1);
-
+	walls[22].init(&brick, 2.0f, Vector3(60, 0, -60), 1, 11.5,2,  1);
+	walls[23].init(&brick, 2.0f, Vector3(-15, 0, -75), 1, 1, 2, 25);
+	walls[24].init(&brick, 2.0f, Vector3(-40, 0, -50), 1, 40, 2, 1);
+	walls[25].init(&brick, 2.0f, Vector3(-30, 0, -35), 1, 20, 2, 1);
+	walls[26].init(&brick, 2.0f, Vector3(-30, 0, -15), 1, 20, 2, 1);
+	walls[27].init(&brick, 2.0f, Vector3(-30, 0, -8), 1, 1, 2, 8);
+	walls[28].init(&brick, 2.0f, Vector3(-30, 0, -42), 1, 1, 2, 8);
+	walls[29].init(&brick, 2.0f, Vector3(-60, 0, -31), 1, 1, 2, 18);
+	walls[30].init(&brick, 2.0f, Vector3(-70, 0, -31), 1, 1, 2, 18);
+	walls[31].init(&brick, 2.0f, Vector3(-79, 0, -30), 1, 1, 2, 19);
+	walls[32].init(&brick, 2.0f, Vector3(-79, 0, -85), 1, 1, 2, 15);
+	walls[33].init(&brick, 2.0f, Vector3(-95, 0, -70), 1, 5, 2, 1);
+	walls[34].init(&brick, 2.0f, Vector3(-95, 0, -30), 1, 5, 2, 1);
+	walls[35].init(&brick, 2.0f, Vector3(80, 0, -25), 1, 1, 2, 25);
+	walls[36].init(&brick, 2.0f, Vector3(48.5, 0, -70), 1, 1, 2, 15);
+	walls[37].init(&brick, 2.0f, Vector3(29.5, 0, -85), 1, 20, 2, 1);
+	walls[38].init(&brick, 2.0f, Vector3(-50, 0, 49), 1, 20, 2, 1);
+	walls[39].init(&brick, 2.0f, Vector3(-50, 0, 70), 1, 20, 2, 1);
+	walls[40].init(&brick, 2.0f, Vector3(-30, 0, 70), 1, 1, 2, 20);
 
 	for(int i=0; i<gameNS::NUM_CAMS; i++)
 	{
@@ -242,6 +261,8 @@ void ColoredCubeApp::initApp()
 	}
 	enemyCam[0].init(&camBox, &enBullet[0], 2.0f, Vector3(5,0,45), Vector3(0,0,0), 0, 0, 1);
 	enemyCam[1].init(&camBox, &enBullet[1], 2.0f, Vector3(45,0,-45), Vector3(0,0,0), 0, 0, 1);
+
+	enemyCam[gameNS::NUM_CAMS-1].init(&blueBox, &enBullet[gameNS::NUM_CAMS-1], 2.0f, Vector3(-48, 0, -80), Vector3(0,0,0), 0, 0, 1); //dunstan will always be the last camera in the list
 
 	for(int i=0; i<gameNS::NUM_MONEY; i++)
 	{
@@ -373,11 +394,12 @@ void ColoredCubeApp::updateScene(float dt)
 	//D3DXVECTOR3 pos(-50.0f, 150.0f, 0.0f);
 	//D3DXVECTOR3 target(0.0f, 0.0f, 0.0f);
 	//D3DXVECTOR3 up(0.0f, 1.0f, 0.0f);
-	D3DXVECTOR3 pos(player.getPosition().x - 25, player.getPosition().y + 50, player.getPosition().z);
+	D3DXVECTOR3 pos(player.getPosition().x - 25, player.getPosition().y + 20, player.getPosition().z);
 	D3DXVECTOR3 target(player.getPosition());
 	D3DXVECTOR3 up(0.0f, 1.0f, 0.0f);
 	D3DXMatrixLookAtLH(&mView, &pos, &target, &up);
 
+#pragma region first-pass cleanup
 	//For the first update pass, we want to remove any money that is colliding with cameras or walls
 	if(firstpass)
 	{
@@ -403,6 +425,7 @@ void ColoredCubeApp::updateScene(float dt)
 			}
 		}
 	}
+#pragma endregion
 }
 
 void ColoredCubeApp::drawScene()
