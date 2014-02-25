@@ -57,20 +57,11 @@ void cameraObject::update(float dt, GameObject* player)
 
 	Vector3 aimVec = player->getPosition() - position;
 	Scale(&scale, 1, 1, 1.5);
-
-	//if (ToDegree(spinAmount*40)< tan(aimVec.x/aimVec.z)){
-	//	motionHinge = 1;
-	//}
-	//if (ToDegree(spinAmount*40)> tan(aimVec.x/aimVec.z)){
-	//	motionHinge = -1;
-	//}
-	//if (ToDegree(spinAmount*40) == tan(aimVec.x/aimVec.z)){
-	//	motionHinge = 0;
-	//}
 	float fun = 0;
-		fun = atan(tan(aimVec.x/aimVec.z));
-	//fun = ToDegree(fun);
-	/*spinAmount += dt*10 * motionHinge;*/
+		if(aimVec.z>0)
+			fun = asin(sin(aimVec.x/D3DXVec3Length(&aimVec)));
+		if(aimVec.z<=0)
+			fun = asin(sin(-aimVec.x/D3DXVec3Length(&aimVec)));
 	RotateZ(&point, ToDegree(-30));
 	RotateY(&rotate, fun);
 	

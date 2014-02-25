@@ -319,17 +319,17 @@ void ColoredCubeApp::updateScene(float dt)
 		}
 		enemyCam[i].update(dt, &player);
 		enemyCam[i].shoot(&player);
-		if(!enemyCam[i].getActiveState())
-			enemyTimer[i] = 0;
+		//if(!enemyCam[i].getActiveState())
+		//	enemyTimer[i] = 0;
 		enBullet[i].update(dt);
 		}
 	int numberInRange=0;
 	for(int i=0; i<gameNS::NUM_CAMS; i++){
-		if(enemyCam[i].isInRange(player.getPosition()) && enemyTimer[i] == 0){
+		if(enemyCam[i].isInRange(player.getPosition()) && enemyTimer[i] == 0 && enemyCam[i].getActiveState()){
 			audio->playCue(WOOP_WOOP);
 			enemyTimer[i]=1;
 		}
-		if(!enemyCam[i].isInRange(player.getPosition())){
+		if(!enemyCam[i].isInRange(player.getPosition()) || !enemyCam[i].getActiveState()){
 			enemyTimer[i]=0;
 		}
 		numberInRange+=enemyTimer[i];
