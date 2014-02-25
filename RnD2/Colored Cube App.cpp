@@ -103,7 +103,7 @@ private:
 	cameraObject enemyCam[gameNS::NUM_CAMS];
 	Bullet enBullet[gameNS::NUM_CAMS];
 	//Gravball gravball;
-	GameObject floor;
+	Wall floor;
 
 	float spinAmount;
 
@@ -191,7 +191,8 @@ void ColoredCubeApp::initApp()
 	zLine.setPosition(Vector3(0,0,0));
 	zLine.setRotationY(ToRadian(90));
 	
-	floor.init(&yellowGreenBox, sqrt(2.0), Vector3(-50,-0.02,-50), Vector3(0,0,0), 0, 1);
+	//floor.init(&yellowGreenBox, sqrt(2.0), Vector3(-5,-0.02,-5), Vector3(0,0,0), 0, 1);
+	floor.init(&yellowGreenBox, 2.0f, Vector3(0,-1.5,0), 1.0f, 100, 0.01, 100);
 	pBullet.init(&bulletBox, 2.0f, Vector3(0,0,0), Vector3(0,0,0), 0, 1);
 	player.init(&mBox, &pBullet, sqrt(2.0f), Vector3(0,0,0), Vector3(0,0,0), 0, 1);
 	//test.init(&mBox, sqrt(2.0f), Vector3(10, 0, 10), Vector3(0, 0, 0), 0, 1);
@@ -273,7 +274,7 @@ void ColoredCubeApp::updateScene(float dt)
 		}
 	}
 	
-	
+	floor.update(dt);
 	//gameObject2.update(dt);
 	//gameObject3.update(dt);
 	//spinner.update(dt);
@@ -309,7 +310,7 @@ void ColoredCubeApp::updateScene(float dt)
 	D3DXVECTOR3 target(player.getPosition());
 	D3DXVECTOR3 up(0.0f, 1.0f, 0.0f);
 	D3DXMatrixLookAtLH(&mView, &pos, &target, &up);
-	floor.update(dt);
+	
 }
 
 void ColoredCubeApp::drawScene()
