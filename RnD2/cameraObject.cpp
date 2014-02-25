@@ -86,7 +86,6 @@ void cameraObject::shoot(GameObject* player)
 
 	bullet->setPosition(position);
 	Vector3 aimVec = player->getPosition() - position;
-
 	if(D3DXVec3Length(&aimVec) > cameraNS::RANGE) return;
 
 	D3DXVec3Normalize(&aimVec, &aimVec);

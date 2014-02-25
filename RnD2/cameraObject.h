@@ -25,6 +25,7 @@ public:
 	void update(float dt, GameObject* player);
 	void shoot(GameObject* player);
 	bool canShoot(){return bullet->getActiveState();}
+	bool isInRange(Vector3 aimVec){aimVec-=position; if(D3DXVec3Length(&aimVec) > cameraNS::RANGE) return false; else return true;}
 	//void setPosition (Vector3 pos) {position = pos;}
 	//Vector3 getPosition() {return position;}
 	//void setVelocity (Vector3 vel) {velocity = vel;}
@@ -64,6 +65,7 @@ private:
 	float spinAmount;
 	float initialRotation;
 	int motionHinge;
+	Vector3 aimVec;
 };
 
 
