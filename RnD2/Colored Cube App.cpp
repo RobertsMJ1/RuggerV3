@@ -27,6 +27,7 @@
 #include "Gravball.h"
 #include "debugText.h"
 #include "Audio.h"
+#include "Money.h"
 
 namespace colorNS
 {
@@ -65,6 +66,7 @@ namespace gameNS {
 	const int NUM_WALLS = 23;
 	const int PERIMETER = 4;
 	const int NUM_CAMS = 2;
+	const int NUM_MONEY = 100;
 }
 
 namespace fontNS
@@ -74,6 +76,7 @@ namespace fontNS
     const int FONT_HEIGHT = 14;         //height in pixels
 	const int FONT_BIG_SIZE = 255;
 	const COLOR_ARGB FONT_COLOR = colorNS::WHITE;
+	
 }
 
 class ColoredCubeApp : public D3DApp
@@ -95,7 +98,7 @@ private:
  
 private:
 	Line rLine, bLine, gLine;
-	Box mBox, redBox, brick, camBox, bulletBox, eBulletBox, yellowGreenBox;
+	Box mBox, redBox, brick, camBox, bulletBox, eBulletBox, yellowGreenBox, goldBox;
 	Player player;
 	Bullet pBullet;
 	LineObject xLine, yLine, zLine;
@@ -104,6 +107,7 @@ private:
 	Bullet enBullet[gameNS::NUM_CAMS];
 	//Gravball gravball;
 	Wall floor;
+	Money money[gameNS::NUM_MONEY];
 
 	float spinAmount;
 	int shotTimer;
@@ -127,6 +131,8 @@ private:
 	float mPhi;
 	int incrementedYMargin;
 
+	int score;
+	bool firstpass;
 };
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,
@@ -153,6 +159,8 @@ ColoredCubeApp::ColoredCubeApp(HINSTANCE hInstance)
 	D3DXMatrixIdentity(&mProj);
 	D3DXMatrixIdentity(&mWVP); 
 	D3DXMatrixIdentity(&mVP); 
+	score = 0;
+	firstpass = true;
 }
 
 ColoredCubeApp::~ColoredCubeApp()
@@ -179,6 +187,7 @@ void ColoredCubeApp::initApp()
 	eBulletBox.init(md3dDevice, 0.5f, RED);
 	//redBox.init(md3dDevice, 0.00001f, RED);
 	yellowGreenBox.init(md3dDevice, 1.f, LIGHT_YELLOW_GREEN);
+	goldBox.init(md3dDevice, 1.0f, YELLOW);
 	rLine.init(md3dDevice, 10.0f, RED);
 	bLine.init(md3dDevice, 10.0f, BLACK);
 	gLine.init(md3dDevice, 10.0f, GREEN);
@@ -233,6 +242,11 @@ void ColoredCubeApp::initApp()
 	}
 	enemyCam[0].init(&camBox, &enBullet[0], 2.0f, Vector3(5,0,45), Vector3(0,0,0), 0, 0, 1);
 	enemyCam[1].init(&camBox, &enBullet[1], 2.0f, Vector3(45,0,-45), Vector3(0,0,0), 0, 0, 1);
+
+	for(int i=0; i<gameNS::NUM_MONEY; i++)
+	{
+		money[i].init(&goldBox, 2.0f, Vector3(rand()%190 - 90, 0, rand()%180 - 90), Vector3(0,0,0), 0, 1, rand()%2);
+	}
 
 	shotTimer = 0;
 	buildFX();
@@ -294,6 +308,16 @@ void ColoredCubeApp::updateScene(float dt)
 			}
 		}
 	}
+
+	for(int i=0; i<gameNS::NUM_MONEY; i++)
+	{
+		if(player.collided(&money[i]))
+		{
+			money[i].setInActive();
+			score += money[i].getPoints();
+		}
+		money[i].update(dt);
+	}
 	
 	floor.update(dt);
 	//gameObject2.update(dt);
@@ -315,7 +339,9 @@ void ColoredCubeApp::updateScene(float dt)
 		{
 			enemyCam[i].setInActive();
 			audio->playCue(HIT);
+			score++;
 		}
+		
 		enemyCam[i].update(dt, &player);
 		enemyCam[i].shoot(&player);
 		//if(!enemyCam[i].getActiveState())
@@ -346,7 +372,32 @@ void ColoredCubeApp::updateScene(float dt)
 	D3DXVECTOR3 target(player.getPosition());
 	D3DXVECTOR3 up(0.0f, 1.0f, 0.0f);
 	D3DXMatrixLookAtLH(&mView, &pos, &target, &up);
-	
+
+	//For the first update pass, we want to remove any money that is colliding with cameras or walls
+	if(firstpass)
+	{
+		firstpass = false;
+		for(int i=0; i<gameNS::NUM_WALLS; i++)
+		{
+			for(int k=0; k<gameNS::NUM_MONEY; k++)
+			{
+				if(money[k].getActiveState() && money[k].collided(&walls[i]))
+				{
+					money[k].setInActive();
+				}
+			}
+		}
+		for(int i=0; i<gameNS::NUM_CAMS; i++)
+		{
+			for(int k=0; k<gameNS::NUM_MONEY; k++)
+			{
+				if(money[k].getActiveState() && money[k].collided(&enemyCam[i]))
+				{
+					money[k].setInActive();
+				}
+			}
+		}
+	}
 }
 
 void ColoredCubeApp::drawScene()
@@ -383,7 +434,7 @@ void ColoredCubeApp::drawScene()
 	Walls!
 	*******************************************/
 	for(int i=0; i<gameNS::NUM_WALLS; i++)walls[i].draw(mfxWVPVar, mTech, &mVP);
-
+	for(int i=0; i<gameNS::NUM_MONEY; i++) money[i].draw(mfxWVPVar, mTech, &mVP);
 	////draw the boxes
 	//test.draw(mfxWVPVar, mTech, &mVP);
 	floor.draw(mfxWVPVar, mTech, &mVP);

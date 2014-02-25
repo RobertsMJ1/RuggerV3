@@ -99,6 +99,7 @@
     <ClCompile Include="input.cpp" />
     <ClCompile Include="Line.cpp" />
     <ClCompile Include="LineObject.cpp" />
+    <ClCompile Include="Money.cpp" />
     <ClCompile Include="Origin.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Quad.cpp" />
@@ -120,6 +121,7 @@
     <ClInclude Include="input.h" />
     <ClInclude Include="Line.h" />
     <ClInclude Include="LineObject.h" />
+    <ClInclude Include="Money.h" />
     <ClInclude Include="Origin.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Quad.h" />
