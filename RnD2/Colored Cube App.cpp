@@ -395,12 +395,14 @@ void ColoredCubeApp::updateScene(float dt)
 		if(player.collided(&walls[i]))
 		{
 			//DEBUGGING AND LEVEL LAYOUT, COMMENT THIS OUT
-			//player.setPosition(oldPos);
+			player.setPosition(oldPos);
 
 		}
 		if(pBullet.collided(&walls[i]))
 		{
 			pBullet.setInActive();
+			pBullet.setPosition(player.getPosition());
+			pBullet.setVelocity(Vector3(0,0,0));
 			shotTimer = 0;
 		}
 		for(int j=0; j<gameNS::NUM_CAMS; j++)
@@ -472,7 +474,7 @@ void ColoredCubeApp::updateScene(float dt)
 	//D3DXVECTOR3 pos(-50.0f, 150.0f, 0.0f);
 	//D3DXVECTOR3 target(0.0f, 0.0f, 0.0f);
 	//D3DXVECTOR3 up(0.0f, 1.0f, 0.0f);
-	D3DXVECTOR3 pos(player.getPosition().x - 25, player.getPosition().y + 200, player.getPosition().z);
+	D3DXVECTOR3 pos(player.getPosition().x - 25, player.getPosition().y + 50, player.getPosition().z);
 	D3DXVECTOR3 target(player.getPosition());
 	D3DXVECTOR3 up(0.0f, 1.0f, 0.0f);
 	D3DXMatrixLookAtLH(&mView, &pos, &target, &up);

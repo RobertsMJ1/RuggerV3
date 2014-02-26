@@ -10,7 +10,7 @@
 #include "Bullet.h"
 
 namespace cameraNS {
-	const float RANGE = 35;
+	const float RANGE = 30;
 }
 
 class cameraObject : public GameObject
