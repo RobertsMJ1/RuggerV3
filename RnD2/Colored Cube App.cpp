@@ -67,6 +67,7 @@ namespace gameNS {
 	const int PERIMETER = 4;
 	const int NUM_CAMS = 78;
 	const int NUM_MONEY = 100;
+	const int NUM_BULLETS = 5;
 }
 
 namespace fontNS
@@ -98,9 +99,9 @@ private:
  
 private:
 	Line rLine, bLine, gLine;
-	Box mBox, redBox, brick, camBox, bulletBox, eBulletBox, yellowGreenBox, goldBox, blueBox;
+	Box mBox, redBox, brick, camBox, bulletBox, eBulletBox, yellowGreenBox, goldBox, blueBox, greenBox;
 	Player player;
-	Bullet pBullet;
+	vector<Bullet*> pBullets;
 	LineObject xLine, yLine, zLine;
 	Wall walls[gameNS::NUM_WALLS];
 	cameraObject enemyCam[gameNS::NUM_CAMS];
@@ -108,6 +109,7 @@ private:
 	//Gravball gravball;
 	Wall floor;
 	Money money[gameNS::NUM_MONEY];
+	GameObject pickup;
 
 	float spinAmount;
 	int shotTimer;
@@ -180,6 +182,7 @@ void ColoredCubeApp::initApp()
 	D3DApp::initApp();
 #pragma region Base object initialization
 	mBox.init(md3dDevice, 1.0f, WHITE);
+	greenBox.init(md3dDevice, 1.0f, RED);
 	brick.init(md3dDevice, 1.0f, DARKBROWN);
 	camBox.init(md3dDevice, 1.0f, BLACK);
 	bulletBox.init(md3dDevice, 0.5f, BEACH_SAND);
@@ -200,18 +203,21 @@ void ColoredCubeApp::initApp()
 	zLine.init(&gLine, Vector3(0,0,0), 5);
 	zLine.setPosition(Vector3(0,0,0));
 	zLine.setRotationY(ToRadian(90));	
-#pragma endregion
+
+	for (int i = 0; i < gameNS::NUM_BULLETS; i++) {
+		pBullets.push_back(new Bullet());
+		pBullets[i]->init(&bulletBox, 2.0f, Vector3(0,0,0), Vector3(0,0,0), 0, 1);
+	}
+
+	pickup.init(&greenBox, 2.0f, Vector3(-90,0,80), Vector3(0,0,0),0,1);
+
 	//floor.init(&yellowGreenBox, sqrt(2.0), Vector3(-5,-0.02,-5), Vector3(0,0,0), 0, 1);
 	floor.init(&yellowGreenBox, 2.0f, Vector3(0,-1.5f,0), 1.0f, 100, 0.01, 100);
-	pBullet.init(&bulletBox, 2.0f, Vector3(0,0,0), Vector3(0,0,0), 0, 1);
-	//player.init(&mBox, &pBullet, sqrt(2.0f), Vector3(-90,0,85), Vector3(0,0,0), 0, 1);
-	player.init(&mBox, &pBullet, sqrt(2.0f), Vector3(-5,0,0), Vector3(0,0,0), 0, 1);
-	//test.init(&mBox, sqrt(2.0f), Vector3(10, 0, 10), Vector3(0, 0, 0), 0, 1);
-	//gravball.init(&mBox, &pBullet, sqrt(2.0f), Vector3(10, 0, 10), Vector3(0,0,0), 0, 1);
+	player.init(&mBox, pBullets, sqrt(2.0f), Vector3(-90,0,85), Vector3(0,0,0), 0, 1);
 	
-#pragma region Wall Placement
-	//Initializing the walls' position is completely arbitrary and base on trial-and-error
-	//		       geom,  rad,  position,			sc,	w,  h,  d
+
+
+//				   geom,  rad,  position,			sc,	w,  h,  d
 	walls[0].init(&brick, 2.0f, Vector3(0, 0, 100),	1, 100, 10, 1);
 	walls[1].init(&brick, 2.0f, Vector3(0, 0, -100),1, 100, 10, 1);
 	walls[2].init(&brick, 2.0f, Vector3(100, 0, 0), 1, 1,	10, 100);
@@ -372,23 +378,17 @@ void ColoredCubeApp::updateScene(float dt)
 	if(input->isKeyDown(VK_SHIFT)) {
 		player.setSpeed(40);
 	}
-	else player.setSpeed(20); //20 was normal
-	/*if(input->isKeyDown(VK_SPACE)){ 
-		if(shotTimer == 0){
-			audio->playCue(PLAYER_FIRE);
-			shotTimer = 1;
-			player.shoot();
-		}
-	}*/
-	//gravball.update(dt);
-	//test.update(dt);
-	
+	else player.setSpeed(20);
 	player.setVelocity(moveCube() * player.getSpeed());
 	player.update(dt);
-	//if(player.collided(&test))
-	//{
-	//	player.setPosition(oldPos);
-	//}
+	
+	if (player.collided(&pickup)) {
+		pickup.setInActive();
+		player.charge();
+	}
+
+	pickup.update(dt);
+
 
 	for(int i=0; i<gameNS::NUM_WALLS; i++)
 	{
@@ -398,12 +398,13 @@ void ColoredCubeApp::updateScene(float dt)
 			player.setPosition(oldPos);
 
 		}
-		if(pBullet.collided(&walls[i]))
-		{
-			pBullet.setInActive();
-			pBullet.setPosition(player.getPosition());
-			pBullet.setVelocity(Vector3(0,0,0));
-			shotTimer = 0;
+		for (int j = 0; j < pBullets.size(); j++) {
+			if (pBullets[j]->collided(&walls[i])) {
+				pBullets[j]->setInActive();
+				pBullets[j]->setVelocity(D3DXVECTOR3(0,0,0));
+				pBullets[j]->setPosition(D3DXVECTOR3(0,0,0));
+				shotTimer = 0;
+			}		
 		}
 		for(int j=0; j<gameNS::NUM_CAMS; j++)
 		{
@@ -440,12 +441,16 @@ void ColoredCubeApp::updateScene(float dt)
 	for(int i=0; i<gameNS::NUM_WALLS; i++)walls[i].update(dt);
 	for(int i=0; i<gameNS::NUM_CAMS; i++)
 	{
-		if(pBullet.collided(&enemyCam[i])&& enemyCam[i].getActiveState())
-		{
-			enemyCam[i].setInActive();
-			audio->playCue(HIT);
-			pBullet.setInActive();
-			score++;
+		for (int j = 0; j < pBullets.size(); j++) {
+			if(pBullets[j]->collided(&enemyCam[i])&& enemyCam[i].getActiveState())
+			{
+				enemyCam[i].setInActive();
+				audio->playCue(HIT);
+				pBullets[j]->setInActive();
+				pBullets[j]->setVelocity(D3DXVECTOR3(0,0,0));
+				pBullets[j]->setPosition(D3DXVECTOR3(0,0,0));
+				score++;
+			}
 		}
 		
 		enemyCam[i].update(dt, &player);
@@ -453,7 +458,7 @@ void ColoredCubeApp::updateScene(float dt)
 		//if(!enemyCam[i].getActiveState())
 		//	enemyTimer[i] = 0;
 		enBullet[i].update(dt);
-		}
+	}
 	int numberInRange=0;
 	for(int i=0; i<gameNS::NUM_CAMS; i++){
 		if(enemyCam[i].isInRange(player.getPosition()) && enemyTimer[i] == 0 && enemyCam[i].getActiveState()){
@@ -511,7 +516,6 @@ void ColoredCubeApp::updateScene(float dt)
 void ColoredCubeApp::drawScene()
 {
 	D3DApp::drawScene();
-
 	// Restore default states, input layout and primitive topology 
 	// because mFont->DrawText changes them.  Note that we can 
 	// restore the default states by passing null.
@@ -530,6 +534,8 @@ void ColoredCubeApp::drawScene()
 	//Set mVP to be view*projection, so we can pass that into GO::draw(..)
 	mVP = mView*mProj;
 
+	pickup.draw(mfxWVPVar, mTech, &mVP);
+
 	//setting the color flip variable in the shader
 	mfxFLIPVar->SetRawValue(&foo[0], 0, sizeof(int));
 
@@ -543,6 +549,7 @@ void ColoredCubeApp::drawScene()
 	*******************************************/
 	for(int i=0; i<gameNS::NUM_WALLS; i++)walls[i].draw(mfxWVPVar, mTech, &mVP);
 	for(int i=0; i<gameNS::NUM_MONEY; i++) money[i].draw(mfxWVPVar, mTech, &mVP);
+	
 	////draw the boxes
 	//test.draw(mfxWVPVar, mTech, &mVP);
 	floor.draw(mfxWVPVar, mTech, &mVP);

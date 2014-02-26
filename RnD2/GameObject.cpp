@@ -57,21 +57,13 @@ void GameObject::update(float dt)
 //Note that this collision only works for axis-aligned cubes
 bool GameObject::collided(GameObject *gameObject)
 {
-	//Vector3 diff = position - gameObject->getPosition();
-	//float length = D3DXVec3LengthSq(&diff);
-	//float radii = radiusSquared + gameObject->getRadiusSquare();
-	//if (length <= radii){
-	//	//gameObject->setInActive();
-	//	return true;
-	//}
-	//return false;
-
-	if(position.x - getWidth() <= gameObject->getPosition().x + gameObject->getWidth() && 
-		position.x+getWidth() >= gameObject->getPosition().x - gameObject->getWidth() &&
+	if (!gameObject->getActiveState()) return false;
+	if( position.x - getWidth() <= gameObject->getPosition().x + gameObject->getWidth() && 
+		position.x + getWidth() >= gameObject->getPosition().x - gameObject->getWidth() &&
 		position.y - getHeight() <= gameObject->getPosition().y + gameObject->getHeight() &&
-		position.y+getHeight() >= gameObject->getPosition().y - gameObject->getHeight() &&
+		position.y + getHeight() >= gameObject->getPosition().y - gameObject->getHeight() &&
 		position.z - getDepth() <= gameObject->getPosition().z + gameObject->getDepth() &&
-		position.z+getDepth() >= gameObject->getPosition().z - gameObject->getDepth()) 
+		position.z + getDepth() >= gameObject->getPosition().z - gameObject->getDepth()) 
 			return true;
 	else return false;
 }

@@ -215,7 +215,7 @@ void D3DApp::updateScene(float dt)
 		
 		//debugText.funClear();
 
-		debugText.addLine("Test ", 5, 20);
+		//debugText.addLine("Test ", 5, 20);
 		
 		// Reset for next average.
 		frameCnt = 0;
