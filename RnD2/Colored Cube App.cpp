@@ -28,6 +28,8 @@
 #include "debugText.h"
 #include "Audio.h"
 #include "Money.h"
+#include <ctime>
+using std::time;
 
 namespace colorNS
 {
@@ -101,11 +103,11 @@ private:
 	Line rLine, bLine, gLine;
 	Box mBox, redBox, brick, camBox, bulletBox, eBulletBox, yellowGreenBox, goldBox, blueBox, greenBox;
 	Player player;
-	vector<Bullet*> pBullets;
+	vector<Bullet*> pBullets, enBullets[gameNS::NUM_CAMS];
 	LineObject xLine, yLine, zLine;
 	Wall walls[gameNS::NUM_WALLS];
 	cameraObject enemyCam[gameNS::NUM_CAMS];
-	Bullet enBullet[gameNS::NUM_CAMS];
+	//Bullet enBullet[gameNS::NUM_CAMS];
 	//Gravball gravball;
 	Wall floor;
 	Money money[gameNS::NUM_MONEY];
@@ -156,6 +158,7 @@ ColoredCubeApp::ColoredCubeApp(HINSTANCE hInstance)
 : D3DApp(hInstance), mFX(0), mTech(0), mVertexLayout(0),
   mfxWVPVar(0), mTheta(0.0f), mPhi(PI*0.25f)
 {
+	srand(time(0));
 	D3DXMatrixIdentity(&mView);
 	D3DXMatrixIdentity(&mProj);
 	D3DXMatrixIdentity(&mWVP); 
@@ -202,11 +205,18 @@ void ColoredCubeApp::initApp()
 	yLine.setRotationZ(ToRadian(90));
 	zLine.init(&gLine, Vector3(0,0,0), 5);
 	zLine.setPosition(Vector3(0,0,0));
-	zLine.setRotationY(ToRadian(90));	
+	zLine.setRotationY(ToRadian(90));
 
 	for (int i = 0; i < gameNS::NUM_BULLETS; i++) {
 		pBullets.push_back(new Bullet());
 		pBullets[i]->init(&bulletBox, 2.0f, Vector3(0,0,0), Vector3(0,0,0), 0, 1);
+	}
+	for(int j=0; j<gameNS::NUM_CAMS; j++){
+		for (int i = 0; i < gameNS::NUM_BULLETS; i++) {
+			enBullets[j].push_back(new Bullet());
+			enBullets[j][i]->init(&eBulletBox, 2.0f, Vector3(0,0,0), Vector3(0,0,0), 0, 1);
+		}
+		enemyTimer[j]= 0;
 	}
 
 	pickup.init(&greenBox, 2.0f, Vector3(-90,0,80), Vector3(0,0,0),0,1);
@@ -261,90 +271,90 @@ void ColoredCubeApp::initApp()
 	walls[40].init(&brick, 2.0f, Vector3(-30, 0, 70), 1, 1, 2, 20);
 #pragma endregion
 
-	for(int i=0; i<gameNS::NUM_CAMS; i++)
-	{
-		enBullet[i].init(&eBulletBox, 2.0f, Vector3(0,0,0), Vector3(0,0,0), bulletNS::SPEED, 1);
-		enemyTimer[i]= 0;
-	}
+	//for(int i=0; i<gameNS::NUM_CAMS; i++)
+	//{
+	//	enBullet[i].init(&eBulletBox, 2.0f, Vector3(0,0,0), Vector3(0,0,0), bulletNS::SPEED, 1);
+	//	
+	//}
 #pragma region Camera Placement
-	enemyCam[0].init(&camBox, &enBullet[0], 2.0f, Vector3(-90,0,15), Vector3(0,0,0), 0, 0, 1);
-	enemyCam[1].init(&camBox, &enBullet[1], 2.0f, Vector3(-35,0,5), Vector3(0,0,0), 0, 0, 1);
-	enemyCam[2].init(&camBox, &enBullet[2], 2.0f, Vector3(-35,0,45), Vector3(0,0,0), 0, 0, 1);
-	enemyCam[3].init(&camBox, &enBullet[3], 2.0f, Vector3(-35,0,60), Vector3(0,0,0), 0, 0, 1);
-	enemyCam[4].init(&camBox, &enBullet[4], 2.0f, Vector3(-75,0,60), Vector3(0,0,0), 0, 0, 1);
-	enemyCam[5].init(&camBox, &enBullet[5], 2.0f, Vector3(-35,0,75), Vector3(0,0,0), 0, 0, 1);
-	enemyCam[6].init(&camBox, &enBullet[6], 2.0f, Vector3(-75,0,95), Vector3(0,0,0), 0, 0, 1);
-	enemyCam[7].init(&camBox, &enBullet[7], 2.0f, Vector3(-5,0,95), Vector3(0,0,0), 0, 0, 1);
-	enemyCam[8].init(&camBox, &enBullet[8], 2.0f, Vector3(-5,0,55), Vector3(0,0,0), 0, 0, 1);
-	enemyCam[9].init(&camBox, &enBullet[9], 2.0f, Vector3(-25,0,75), Vector3(0,0,0), 0, 0, 1);
-	enemyCam[10].init(&camBox, &enBullet[10], 2.0f, Vector3(15,0,16), Vector3(0,0,0), 0, 0, 1);
-	enemyCam[11].init(&camBox, &enBullet[11], 2.0f, Vector3(-25,0,16), Vector3(0,0,0), 0, 0, 1);
-	enemyCam[12].init(&camBox, &enBullet[12], 2.0f, Vector3(0,0,45), Vector3(0,0,0), 0, 0, 1);
-	enemyCam[13].init(&camBox, &enBullet[13], 2.0f, Vector3(10,0,75), Vector3(0,0,0), 0, 0, 1);
-	enemyCam[14].init(&camBox, &enBullet[14], 2.0f, Vector3(30,0,90), Vector3(0,0,0), 0, 0, 1);
-	enemyCam[15].init(&camBox, &enBullet[15], 2.0f, Vector3(60,0,90), Vector3(0,0,0), 0, 0, 1);
-	enemyCam[16].init(&camBox, &enBullet[16], 2.0f, Vector3(90,0,90), Vector3(0,0,0), 0, 0, 1);
-	enemyCam[17].init(&camBox, &enBullet[17], 2.0f, Vector3(30,0,70), Vector3(0,0,0), 0, 0, 1);
-	enemyCam[18].init(&camBox, &enBullet[18], 2.0f, Vector3(60,0,70), Vector3(0,0,0), 0, 0, 1);
-	enemyCam[19].init(&camBox, &enBullet[19], 2.0f, Vector3(90,0,70), Vector3(0,0,0), 0, 0, 1);
-	enemyCam[20].init(&camBox, &enBullet[20], 2.0f, Vector3(30,0,50), Vector3(0,0,0), 0, 0, 1);
-	enemyCam[21].init(&camBox, &enBullet[21], 2.0f, Vector3(60,0,50), Vector3(0,0,0), 0, 0, 1);
-	enemyCam[22].init(&camBox, &enBullet[22], 2.0f, Vector3(90,0,50), Vector3(0,0,0), 0, 0, 1);
-	enemyCam[23].init(&camBox, &enBullet[23], 2.0f, Vector3(45,0,60), Vector3(0,0,0), 0, 0, 1);
-	enemyCam[24].init(&camBox, &enBullet[24], 2.0f, Vector3(30,0,30), Vector3(0,0,0), 0, 0, 1);
-	enemyCam[25].init(&camBox, &enBullet[25], 2.0f, Vector3(60,0,30), Vector3(0,0,0), 0, 0, 1);
-	enemyCam[26].init(&camBox, &enBullet[26], 2.0f, Vector3(90,0,30), Vector3(0,0,0), 0, 0, 1);
-	enemyCam[27].init(&camBox, &enBullet[27], 2.0f, Vector3(90,0,10), Vector3(0,0,0), 0, 0, 1);
-	enemyCam[28].init(&camBox, &enBullet[28], 2.0f, Vector3(30,0,5), Vector3(0,0,0), 0, 0, 1);
-	enemyCam[29].init(&camBox, &enBullet[29], 2.0f, Vector3(70,0,-20), Vector3(0,0,0), 0, 0, 1);
-	enemyCam[30].init(&camBox, &enBullet[30], 2.0f, Vector3(90,0,-20), Vector3(0,0,0), 0, 0, 1);
-	enemyCam[31].init(&camBox, &enBullet[31], 2.0f, Vector3(90,0,-90), Vector3(0,0,0), 0, 0, 1);
-	enemyCam[32].init(&camBox, &enBullet[32], 2.0f, Vector3(55,0,-65), Vector3(0,0,0), 0, 0, 1);
-	enemyCam[33].init(&camBox, &enBullet[33], 2.0f, Vector3(30,0,-92), Vector3(0,0,0), 0, 0, 1);
-	enemyCam[34].init(&camBox, &enBullet[34], 2.0f, Vector3(-8,0,-60), Vector3(0,0,0), 0, 0, 1);
-	enemyCam[35].init(&camBox, &enBullet[35], 2.0f, Vector3(10,0,-5), Vector3(0,0,0), 0, 0, 1);
-	enemyCam[36].init(&camBox, &enBullet[36], 2.0f, Vector3(10,0,-25), Vector3(0,0,0), 0, 0, 1);
-	enemyCam[37].init(&camBox, &enBullet[37], 2.0f, Vector3(10,0,-45), Vector3(0,0,0), 0, 0, 1);
-	enemyCam[38].init(&camBox, &enBullet[38], 2.0f, Vector3(10,0,-65), Vector3(0,0,0), 0, 0, 1);
-	enemyCam[39].init(&camBox, &enBullet[39], 2.0f, Vector3(20,0,-15), Vector3(0,0,0), 0, 0, 1);
-	enemyCam[40].init(&camBox, &enBullet[40], 2.0f, Vector3(20,0,-35), Vector3(0,0,0), 0, 0, 1);
-	enemyCam[41].init(&camBox, &enBullet[41], 2.0f, Vector3(20,0,-55), Vector3(0,0,0), 0, 0, 1);
-	enemyCam[42].init(&camBox, &enBullet[42], 2.0f, Vector3(20,0,-75), Vector3(0,0,0), 0, 0, 1);
-	enemyCam[43].init(&camBox, &enBullet[43], 2.0f, Vector3(30,0,-5), Vector3(0,0,0), 0, 0, 1);
-	enemyCam[44].init(&camBox, &enBullet[44], 2.0f, Vector3(30,0,-25), Vector3(0,0,0), 0, 0, 1);
-	enemyCam[45].init(&camBox, &enBullet[45], 2.0f, Vector3(30,0,-45), Vector3(0,0,0), 0, 0, 1);
-	enemyCam[46].init(&camBox, &enBullet[46], 2.0f, Vector3(30,0,-65), Vector3(0,0,0), 0, 0, 1);
-	enemyCam[47].init(&camBox, &enBullet[47], 2.0f, Vector3(40,0,-15), Vector3(0,0,0), 0, 0, 1);
-	enemyCam[48].init(&camBox, &enBullet[48], 2.0f, Vector3(40,0,-35), Vector3(0,0,0), 0, 0, 1);
-	enemyCam[49].init(&camBox, &enBullet[49], 2.0f, Vector3(40,0,-55), Vector3(0,0,0), 0, 0, 1);
-	enemyCam[50].init(&camBox, &enBullet[50], 2.0f, Vector3(40,0,-75), Vector3(0,0,0), 0, 0, 1);
-	enemyCam[51].init(&camBox, &enBullet[51], 2.0f, Vector3(-25,0,6), Vector3(0,0,0), 0, 0, 1);
-	enemyCam[52].init(&camBox, &enBullet[52], 2.0f, Vector3(-25,0,-6), Vector3(0,0,0), 0, 0, 1);
-	enemyCam[53].init(&camBox, &enBullet[53], 2.0f, Vector3(-25,0,-43), Vector3(0,0,0), 0, 0, 1);
-	enemyCam[54].init(&camBox, &enBullet[54], 2.0f, Vector3(-35,0,-6), Vector3(0,0,0), 0, 0, 1);
-	enemyCam[55].init(&camBox, &enBullet[55], 2.0f, Vector3(-35,0,-43), Vector3(0,0,0), 0, 0, 1);
-	enemyCam[56].init(&camBox, &enBullet[56], 2.0f, Vector3(-50,0,-25), Vector3(0,0,0), 0, 0, 1);
-	enemyCam[57].init(&camBox, &enBullet[57], 2.0f, Vector3(-10,0,-25), Vector3(0,0,0), 0, 0, 1);
-	enemyCam[58].init(&camBox, &enBullet[58], 2.0f, Vector3(-65,0,-45), Vector3(0,0,0), 0, 0, 1);
-	enemyCam[59].init(&camBox, &enBullet[59], 2.0f, Vector3(-75,0,-45), Vector3(0,0,0), 0, 0, 1);
-	enemyCam[60].init(&camBox, &enBullet[60], 2.0f, Vector3(-95,0,-15), Vector3(0,0,0), 0, 0, 1);
-	enemyCam[61].init(&camBox, &enBullet[61], 2.0f, Vector3(-95,0,-50), Vector3(0,0,0), 0, 0, 1);
-	enemyCam[62].init(&camBox, &enBullet[62], 2.0f, Vector3(-95,0,-95), Vector3(0,0,0), 0, 0, 1);
-	enemyCam[63].init(&camBox, &enBullet[63], 2.0f, Vector3(-33,0,-95), Vector3(0,0,0), 0, 0, 1);
-	enemyCam[64].init(&camBox, &enBullet[64], 2.0f, Vector3(-46,0,-95), Vector3(0,0,0), 0, 0, 1);
-	enemyCam[65].init(&camBox, &enBullet[65], 2.0f, Vector3(-59,0,-95), Vector3(0,0,0), 0, 0, 1);
-	enemyCam[66].init(&camBox, &enBullet[66], 2.0f, Vector3(-72,0,-95), Vector3(0,0,0), 0, 0, 1);
-	enemyCam[67].init(&camBox, &enBullet[67], 2.0f, Vector3(-20,0,-75), Vector3(0,0,0), 0, 0, 1);
-	enemyCam[68].init(&camBox, &enBullet[68], 2.0f, Vector3(-33,0,-75), Vector3(0,0,0), 0, 0, 1);
-	enemyCam[69].init(&camBox, &enBullet[69], 2.0f, Vector3(-46,0,-75), Vector3(0,0,0), 0, 0, 1);
-	enemyCam[70].init(&camBox, &enBullet[70], 2.0f, Vector3(-59,0,-75), Vector3(0,0,0), 0, 0, 1);
-	enemyCam[71].init(&camBox, &enBullet[71], 2.0f, Vector3(-72,0,-75), Vector3(0,0,0), 0, 0, 1);
-	enemyCam[72].init(&camBox, &enBullet[72], 2.0f, Vector3(-20,0,-55), Vector3(0,0,0), 0, 0, 1);
-	enemyCam[73].init(&camBox, &enBullet[73], 2.0f, Vector3(-33,0,-55), Vector3(0,0,0), 0, 0, 1);
-	enemyCam[74].init(&camBox, &enBullet[74], 2.0f, Vector3(-46,0,-55), Vector3(0,0,0), 0, 0, 1);
-	enemyCam[75].init(&camBox, &enBullet[75], 2.0f, Vector3(-59,0,-55), Vector3(0,0,0), 0, 0, 1);
-	enemyCam[76].init(&camBox, &enBullet[76], 2.0f, Vector3(-72,0,-55), Vector3(0,0,0), 0, 0, 1);
-	enemyCam[77].init(&blueBox, &enBullet[77], 2.0f, Vector3(-20,0,-95), Vector3(0,0,0), 0, 0, 1); //dunstan will always be the last camera in the list
+	enemyCam[0].init(&camBox, enBullets[0], 2.0f, Vector3(-90,0,15), Vector3(0,0,0), 0, 0, 1);
+	enemyCam[1].init(&camBox, enBullets[1], 2.0f, Vector3(-35,0,5), Vector3(0,0,0), 0, 0, 1);
+	enemyCam[2].init(&camBox, enBullets[2], 2.0f, Vector3(-35,0,45), Vector3(0,0,0), 0, 0, 1);
+	enemyCam[3].init(&camBox, enBullets[3], 2.0f, Vector3(-35,0,60), Vector3(0,0,0), 0, 0, 1);
+	enemyCam[4].init(&camBox, enBullets[4], 2.0f, Vector3(-75,0,60), Vector3(0,0,0), 0, 0, 1);
+	enemyCam[5].init(&camBox, enBullets[5], 2.0f, Vector3(-35,0,75), Vector3(0,0,0), 0, 0, 1);
+	enemyCam[6].init(&camBox, enBullets[6], 2.0f, Vector3(-75,0,95), Vector3(0,0,0), 0, 0, 1);
+	enemyCam[7].init(&camBox, enBullets[7], 2.0f, Vector3(-5,0,95), Vector3(0,0,0), 0, 0, 1);
+	enemyCam[8].init(&camBox, enBullets[8], 2.0f, Vector3(-5,0,55), Vector3(0,0,0), 0, 0, 1);
+	enemyCam[9].init(&camBox, enBullets[9], 2.0f, Vector3(-25,0,75), Vector3(0,0,0), 0, 0, 1);
+	enemyCam[10].init(&camBox, enBullets[10], 2.0f, Vector3(15,0,16), Vector3(0,0,0), 0, 0, 1);
+	enemyCam[11].init(&camBox, enBullets[11], 2.0f, Vector3(-25,0,16), Vector3(0,0,0), 0, 0, 1);
+	enemyCam[12].init(&camBox, enBullets[12], 2.0f, Vector3(0,0,45), Vector3(0,0,0), 0, 0, 1);
+	enemyCam[13].init(&camBox, enBullets[13], 2.0f, Vector3(10,0,75), Vector3(0,0,0), 0, 0, 1);
+	enemyCam[14].init(&camBox, enBullets[14], 2.0f, Vector3(30,0,90), Vector3(0,0,0), 0, 0, 1);
+	enemyCam[15].init(&camBox, enBullets[15], 2.0f, Vector3(60,0,90), Vector3(0,0,0), 0, 0, 1);
+	enemyCam[16].init(&camBox, enBullets[16], 2.0f, Vector3(90,0,90), Vector3(0,0,0), 0, 0, 1);
+	enemyCam[17].init(&camBox, enBullets[17], 2.0f, Vector3(30,0,70), Vector3(0,0,0), 0, 0, 1);
+	enemyCam[18].init(&camBox, enBullets[18], 2.0f, Vector3(60,0,70), Vector3(0,0,0), 0, 0, 1);
+	enemyCam[19].init(&camBox, enBullets[19], 2.0f, Vector3(90,0,70), Vector3(0,0,0), 0, 0, 1);
+	enemyCam[20].init(&camBox, enBullets[20], 2.0f, Vector3(30,0,50), Vector3(0,0,0), 0, 0, 1);
+	enemyCam[21].init(&camBox, enBullets[21], 2.0f, Vector3(60,0,50), Vector3(0,0,0), 0, 0, 1);
+	enemyCam[22].init(&camBox, enBullets[22], 2.0f, Vector3(90,0,50), Vector3(0,0,0), 0, 0, 1);
+	enemyCam[23].init(&camBox, enBullets[23], 2.0f, Vector3(45,0,60), Vector3(0,0,0), 0, 0, 1);
+	enemyCam[24].init(&camBox, enBullets[24], 2.0f, Vector3(30,0,30), Vector3(0,0,0), 0, 0, 1);
+	enemyCam[25].init(&camBox, enBullets[25], 2.0f, Vector3(60,0,30), Vector3(0,0,0), 0, 0, 1);
+	enemyCam[26].init(&camBox, enBullets[26], 2.0f, Vector3(90,0,30), Vector3(0,0,0), 0, 0, 1);
+	enemyCam[27].init(&camBox, enBullets[27], 2.0f, Vector3(90,0,10), Vector3(0,0,0), 0, 0, 1);
+	enemyCam[28].init(&camBox, enBullets[28], 2.0f, Vector3(30,0,5), Vector3(0,0,0), 0, 0, 1);
+	enemyCam[29].init(&camBox, enBullets[29], 2.0f, Vector3(70,0,-20), Vector3(0,0,0), 0, 0, 1);
+	enemyCam[30].init(&camBox, enBullets[30], 2.0f, Vector3(90,0,-20), Vector3(0,0,0), 0, 0, 1);
+	enemyCam[31].init(&camBox, enBullets[31], 2.0f, Vector3(90,0,-90), Vector3(0,0,0), 0, 0, 1);
+	enemyCam[32].init(&camBox, enBullets[32], 2.0f, Vector3(55,0,-65), Vector3(0,0,0), 0, 0, 1);
+	enemyCam[33].init(&camBox, enBullets[33], 2.0f, Vector3(30,0,-92), Vector3(0,0,0), 0, 0, 1);
+	enemyCam[34].init(&camBox, enBullets[34], 2.0f, Vector3(-8,0,-60), Vector3(0,0,0), 0, 0, 1);
+	enemyCam[35].init(&camBox, enBullets[35], 2.0f, Vector3(10,0,-5), Vector3(0,0,0), 0, 0, 1);
+	enemyCam[36].init(&camBox, enBullets[36], 2.0f, Vector3(10,0,-25), Vector3(0,0,0), 0, 0, 1);
+	enemyCam[37].init(&camBox, enBullets[37], 2.0f, Vector3(10,0,-45), Vector3(0,0,0), 0, 0, 1);
+	enemyCam[38].init(&camBox, enBullets[38], 2.0f, Vector3(10,0,-65), Vector3(0,0,0), 0, 0, 1);
+	enemyCam[39].init(&camBox, enBullets[39], 2.0f, Vector3(20,0,-15), Vector3(0,0,0), 0, 0, 1);
+	enemyCam[40].init(&camBox, enBullets[40], 2.0f, Vector3(20,0,-35), Vector3(0,0,0), 0, 0, 1);
+	enemyCam[41].init(&camBox, enBullets[41], 2.0f, Vector3(20,0,-55), Vector3(0,0,0), 0, 0, 1);
+	enemyCam[42].init(&camBox, enBullets[42], 2.0f, Vector3(20,0,-75), Vector3(0,0,0), 0, 0, 1);
+	enemyCam[43].init(&camBox, enBullets[43], 2.0f, Vector3(30,0,-5), Vector3(0,0,0), 0, 0, 1);
+	enemyCam[44].init(&camBox, enBullets[44], 2.0f, Vector3(30,0,-25), Vector3(0,0,0), 0, 0, 1);
+	enemyCam[45].init(&camBox, enBullets[45], 2.0f, Vector3(30,0,-45), Vector3(0,0,0), 0, 0, 1);
+	enemyCam[46].init(&camBox, enBullets[46], 2.0f, Vector3(30,0,-65), Vector3(0,0,0), 0, 0, 1);
+	enemyCam[47].init(&camBox, enBullets[47], 2.0f, Vector3(40,0,-15), Vector3(0,0,0), 0, 0, 1);
+	enemyCam[48].init(&camBox, enBullets[48], 2.0f, Vector3(40,0,-35), Vector3(0,0,0), 0, 0, 1);
+	enemyCam[49].init(&camBox, enBullets[49], 2.0f, Vector3(40,0,-55), Vector3(0,0,0), 0, 0, 1);
+	enemyCam[50].init(&camBox, enBullets[50], 2.0f, Vector3(40,0,-75), Vector3(0,0,0), 0, 0, 1);
+	enemyCam[51].init(&camBox, enBullets[51], 2.0f, Vector3(-25,0,6), Vector3(0,0,0), 0, 0, 1);
+	enemyCam[52].init(&camBox, enBullets[52], 2.0f, Vector3(-25,0,-6), Vector3(0,0,0), 0, 0, 1);
+	enemyCam[53].init(&camBox, enBullets[53], 2.0f, Vector3(-25,0,-43), Vector3(0,0,0), 0, 0, 1);
+	enemyCam[54].init(&camBox, enBullets[54], 2.0f, Vector3(-35,0,-6), Vector3(0,0,0), 0, 0, 1);
+	enemyCam[55].init(&camBox, enBullets[55], 2.0f, Vector3(-35,0,-43), Vector3(0,0,0), 0, 0, 1);
+	enemyCam[56].init(&camBox, enBullets[56], 2.0f, Vector3(-50,0,-25), Vector3(0,0,0), 0, 0, 1);
+	enemyCam[57].init(&camBox, enBullets[57], 2.0f, Vector3(-10,0,-25), Vector3(0,0,0), 0, 0, 1);
+	enemyCam[58].init(&camBox, enBullets[58], 2.0f, Vector3(-65,0,-45), Vector3(0,0,0), 0, 0, 1);
+	enemyCam[59].init(&camBox, enBullets[59], 2.0f, Vector3(-75,0,-45), Vector3(0,0,0), 0, 0, 1);
+	enemyCam[60].init(&camBox, enBullets[60], 2.0f, Vector3(-95,0,-15), Vector3(0,0,0), 0, 0, 1);
+	enemyCam[61].init(&camBox, enBullets[61], 2.0f, Vector3(-95,0,-50), Vector3(0,0,0), 0, 0, 1);
+	enemyCam[62].init(&camBox, enBullets[62], 2.0f, Vector3(-95,0,-95), Vector3(0,0,0), 0, 0, 1);
+	enemyCam[63].init(&camBox, enBullets[63], 2.0f, Vector3(-33,0,-95), Vector3(0,0,0), 0, 0, 1);
+	enemyCam[64].init(&camBox, enBullets[64], 2.0f, Vector3(-46,0,-95), Vector3(0,0,0), 0, 0, 1);
+	enemyCam[65].init(&camBox, enBullets[65], 2.0f, Vector3(-59,0,-95), Vector3(0,0,0), 0, 0, 1);
+	enemyCam[66].init(&camBox, enBullets[66], 2.0f, Vector3(-72,0,-95), Vector3(0,0,0), 0, 0, 1);
+	enemyCam[67].init(&camBox, enBullets[67], 2.0f, Vector3(-20,0,-75), Vector3(0,0,0), 0, 0, 1);
+	enemyCam[68].init(&camBox, enBullets[68], 2.0f, Vector3(-33,0,-75), Vector3(0,0,0), 0, 0, 1);
+	enemyCam[69].init(&camBox, enBullets[69], 2.0f, Vector3(-46,0,-75), Vector3(0,0,0), 0, 0, 1);
+	enemyCam[70].init(&camBox, enBullets[70], 2.0f, Vector3(-59,0,-75), Vector3(0,0,0), 0, 0, 1);
+	enemyCam[71].init(&camBox, enBullets[71], 2.0f, Vector3(-72,0,-75), Vector3(0,0,0), 0, 0, 1);
+	enemyCam[72].init(&camBox, enBullets[72], 2.0f, Vector3(-20,0,-55), Vector3(0,0,0), 0, 0, 1);
+	enemyCam[73].init(&camBox, enBullets[73], 2.0f, Vector3(-33,0,-55), Vector3(0,0,0), 0, 0, 1);
+	enemyCam[74].init(&camBox, enBullets[74], 2.0f, Vector3(-46,0,-55), Vector3(0,0,0), 0, 0, 1);
+	enemyCam[75].init(&camBox, enBullets[75], 2.0f, Vector3(-59,0,-55), Vector3(0,0,0), 0, 0, 1);
+	enemyCam[76].init(&camBox, enBullets[76], 2.0f, Vector3(-72,0,-55), Vector3(0,0,0), 0, 0, 1);
+	enemyCam[77].init(&blueBox, enBullets[77], 2.0f, Vector3(-20,0,-95), Vector3(0,0,0), 0, 0, 1); //dunstan will always be the last camera in the list
 #pragma endregion
 
 	for(int i=0; i<gameNS::NUM_MONEY; i++)
@@ -408,9 +418,13 @@ void ColoredCubeApp::updateScene(float dt)
 		}
 		for(int j=0; j<gameNS::NUM_CAMS; j++)
 		{
-			if(enBullet[j].collided(&walls[i])) 
+			for(int k=0; k<enBullets[j].size(); k++)
 			{
-				enBullet[j].setInActive();
+				if(enBullets[j][k]->collided(&walls[i])) 
+				{
+					enBullets[j][k]->setInActive();
+					enBullets[j][k]->setVelocity(Vector3(0,0,0));
+				}
 			}
 		}
 	}
@@ -457,7 +471,10 @@ void ColoredCubeApp::updateScene(float dt)
 		enemyCam[i].shoot(&player);
 		//if(!enemyCam[i].getActiveState())
 		//	enemyTimer[i] = 0;
-		enBullet[i].update(dt);
+		//for(int k=0; k<enBullets[k].size(); k++)
+		//{
+		//	enBullets[i][k]->update(dt);
+		//}
 	}
 	int numberInRange=0;
 	for(int i=0; i<gameNS::NUM_CAMS; i++){
@@ -564,7 +581,11 @@ void ColoredCubeApp::drawScene()
 	*******************************************/
 	for(int i=0; i<gameNS::NUM_CAMS; i++){
 		enemyCam[i].draw(mfxWVPVar, mTech, &mVP);
-		enBullet[i].draw(mfxWVPVar, mTech, &mVP);
+//		enBullet[i].draw(mfxWVPVar, mTech, &mVP);
+		for(int j=0; j<enBullets[i].size(); j++)
+		{
+			enBullets[i][j]->draw(mfxWVPVar, mTech, &mVP);
+		}
 	}
 
 	// We specify DT_NOCLIP, so we do not care about width/height of the rect.

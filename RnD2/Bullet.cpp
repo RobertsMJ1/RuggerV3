@@ -43,6 +43,8 @@ void Bullet::draw(ID3D10EffectMatrixVariable* mfxWVPVar, ID3D10EffectTechnique* 
 
 void Bullet::update(float dt)
 {
+	Normalize(&velocity, &velocity);
+	velocity *= bulletNS::SPEED;
 	position += velocity*dt;
 	Identity(&world);
 	Translate(&world, position.x, position.y, position.z);

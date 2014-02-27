@@ -8,6 +8,8 @@
 #include "GameObject.h"
 #include "constants.h"
 #include "Bullet.h"
+#include <vector>
+using std::vector;
 
 namespace cameraNS {
 	const float RANGE = 30;
@@ -20,11 +22,11 @@ public:
 	cameraObject();
 	~cameraObject();
 
-	void init(Box *b, Bullet* bull, float r, Vector3 pos, Vector3 vel, float initRot, float sp, float s);
+	void init(Box *b, vector<Bullet*> theBullets, float r, Vector3 pos, Vector3 vel, float initRot, float sp, float s);
 	void draw(ID3D10EffectMatrixVariable* mfxWVPVar, ID3D10EffectTechnique* mTech, Matrix* mVP);
 	void update(float dt, GameObject* player);
 	void shoot(GameObject* player);
-	bool canShoot(){return bullet->getActiveState();}
+	//bool canShoot(){return bullets->getActiveState();}
 	bool isInRange(Vector3 aimVec){aimVec-=position; if(D3DXVec3Length(&aimVec) > cameraNS::RANGE) return false; else return true;}
 	//void setPosition (Vector3 pos) {position = pos;}
 	//Vector3 getPosition() {return position;}
@@ -59,7 +61,8 @@ private:
 	//float scale;
 	//int piece;
 	//ID3D10EffectTechnique* mTech;
-	Bullet* bullet;
+	double timeSinceLastShot;
+	vector<Bullet*> bullets;
 
 	/*ADDED BY ANDREW */
 	float spinAmount;

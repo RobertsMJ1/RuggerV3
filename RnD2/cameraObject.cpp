@@ -7,6 +7,7 @@ cameraObject::cameraObject() : GameObject()
 	speed = 0;
 	active = true;
 	Identity(&world);
+	aimVec = Vector3(0,0,0);
 }
 
 cameraObject::~cameraObject()
@@ -17,6 +18,7 @@ cameraObject::~cameraObject()
 void cameraObject::draw(ID3D10EffectMatrixVariable* mfxWVPVar, ID3D10EffectTechnique* mTech, Matrix* mVP)
 {
 	if(!active)return;
+
 	Matrix mWVP = world* (*mVP);
 	mfxWVPVar->SetMatrix((float*)&mWVP);
 	D3D10_TECHNIQUE_DESC techDesc;
@@ -25,10 +27,12 @@ void cameraObject::draw(ID3D10EffectMatrixVariable* mfxWVPVar, ID3D10EffectTechn
 	{
 		mTech->GetPassByIndex( p )->Apply(0);
 		box->draw();
+		for (int i = 0; i < bullets.size(); i++) 
+			if(bullets[i]->getActiveState())bullets[i]->draw(mfxWVPVar, mTech, mVP);
 	}
 }
 
-void cameraObject::init(Box *b, Bullet* bull, float r, Vector3 pos, Vector3 vel, float initRot, float sp, float s)
+void cameraObject::init(Box *b, vector<Bullet*> theBullets, float r, Vector3 pos, Vector3 vel, float initRot, float sp, float s)
 {
 	box = b;
 	radius = r;
@@ -43,7 +47,8 @@ void cameraObject::init(Box *b, Bullet* bull, float r, Vector3 pos, Vector3 vel,
 	width = s;
 	height = s;
 	depth = s;
-	bullet = bull;
+	timeSinceLastShot = 500;
+	cameraObject::bullets = theBullets;
 }
 
 void cameraObject::update(float dt, GameObject* player)
@@ -55,33 +60,53 @@ void cameraObject::update(float dt, GameObject* player)
 	Matrix rotate;
 	Matrix point;
 
-	Vector3 aimVec = player->getPosition() - position;
+	aimVec = player->getPosition() - position;
 	Scale(&scale, 1, 1, 1.5);
 	float fun = 0;
 		if(aimVec.z>0)
 			fun = asin(sin(aimVec.x/D3DXVec3Length(&aimVec)));
 		if(aimVec.z<=0)
 			fun = asin(sin(-aimVec.x/D3DXVec3Length(&aimVec)));
-	RotateZ(&point, ToDegree(-30));
+	//RotateZ(&point, ToDegree(-30));
 	RotateY(&rotate, fun);
 	
 	Translate(&translate, position.x, position.y, position.z);
-	world = scale * rotate /* point*/ * translate;
+	for (int i = 0; i < bullets.size(); i++)
+		bullets[i]->update(dt);
+
+	world = scale * rotate * translate;
+	timeSinceLastShot+=dt;
 }
 
 void cameraObject::shoot(GameObject* player)
 {
-	if(canShoot()) return;
+	if(D3DXVec3LengthSq(&aimVec) > cameraNS::RANGE*cameraNS::RANGE) return;
 	if(!active) return;
-	
+	if (timeSinceLastShot > 0.5)
+		timeSinceLastShot = 0;
+	else return;
 
-	bullet->setPosition(position);
-	Vector3 aimVec = player->getPosition() - position;
-	if(D3DXVec3Length(&aimVec) > cameraNS::RANGE) return;
+	int index = -1;
+	for (int i = 0; i < bullets.size(); i++) {
+		if (!bullets[i]->getActiveState()) { //If the bullet at index i is not in use
+			index = i;
+			i = bullets.size();
+		}
+	}
+	if (index == -1) return;
 
+	bullets[index]->setPosition(position);
+	bullets[index]->setSpeed(bulletNS::SPEED);
 	D3DXVec3Normalize(&aimVec, &aimVec);
+	bullets[index]->setVelocity(aimVec);
+	bullets[index]->setActive();
+	//bullet->setPosition(position);
+	//Vector3 aimVec = player->getPosition() - position;
+	//if(D3DXVec3Length(&aimVec) > cameraNS::RANGE) return;
 
-	bullet->setVelocity(aimVec * bulletNS::SPEED);
-	bullet->setActive();
-	
+	//D3DXVec3Normalize(&aimVec, &aimVec);
+
+	//bullet->setVelocity(aimVec * bulletNS::SPEED);
+	//bullet->setActive();
+	//
 }
