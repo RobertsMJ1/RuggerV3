@@ -138,6 +138,8 @@ private:
 
 	int score;
 	bool firstpass;
+	bool startScreen, endScreen;
+	DebugText sText, eText;
 };
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, int showCmd)
@@ -166,6 +168,8 @@ ColoredCubeApp::ColoredCubeApp(HINSTANCE hInstance)
 	D3DXMatrixIdentity(&mVP); 
 	score = 0;
 	firstpass = true;
+	startScreen = true;
+	endScreen = false;
 }
 
 ColoredCubeApp::~ColoredCubeApp()
@@ -372,6 +376,15 @@ void ColoredCubeApp::initApp()
 		money[i].init(&goldBox, 2.0f, Vector3(rand()%190 - 90, 0, rand()%180 - 90), Vector3(0,0,0), 0, 1, rand()%2);
 	}
 
+	//Initializing text strings yay
+	sText.addLine("WELCOME RUGGER !", 10, 10);
+	sText.addLine("WASD TO MOVE", 10, 30);
+	sText.addLine("ARROW KEYS TO SHOOT", 10, 50);
+	sText.addLine("HOLD SHIFT TO SPRINT!", 10, 70);
+	sText.addLine("GO KILL DUNSTAN FOR ME!", 10, 90);
+	sText.addLine("PRESS ANY KEY TO BEGIN !", 250, 300);
+	eText.addLine("CONGRATS RUGGER YOU WON!", 250, 300);
+
 	shotTimer = 0;
 	buildFX();
 	buildVertexLayouts();
@@ -388,126 +401,142 @@ void ColoredCubeApp::onResize()
 
 void ColoredCubeApp::updateScene(float dt)
 {
-	
-	D3DApp::updateScene(dt);
-	Vector3 oldPos = player.getPosition();
-
-	if(input->isKeyDown(VK_UP)) player.shoot(UP);
-	if(input->isKeyDown(VK_DOWN)) player.shoot(DOWN);
-	if(input->isKeyDown(VK_LEFT)) player.shoot(LEFT);
-	if(input->isKeyDown(VK_RIGHT)) player.shoot(RIGHT);
-	if(input->isKeyDown(VK_SHIFT)) {
-		player.setSpeed(40);
-	}
-	else player.setSpeed(20);
-	player.setVelocity(moveCube() * player.getSpeed());
-	player.update(dt);
-	
-	for (int i = 0; i < ragePickups.size(); i++) {
-		if (player.collided(&ragePickups[i])) {
-			ragePickups[i].setInActive();
-			player.charge();
-		}
-		ragePickups[i].update(dt);
-	}
-	
-
-	for(int i=0; i<gameNS::NUM_WALLS; i++)
+	if(!endScreen && !startScreen)
 	{
-		if(player.collided(&walls[i]))
-		{
-			//DEBUGGING AND LEVEL LAYOUT, COMMENT THIS OUT
-			player.setPosition(oldPos);
+		if(!enemyCam[gameNS::NUM_CAMS-1].getActiveState()) endScreen = true;
+	
+		D3DApp::updateScene(dt);
+		Vector3 oldPos = player.getPosition();
 
+		if(input->isKeyDown(VK_UP)) player.shoot(UP);
+		if(input->isKeyDown(VK_DOWN)) player.shoot(DOWN);
+		if(input->isKeyDown(VK_LEFT)) player.shoot(LEFT);
+		if(input->isKeyDown(VK_RIGHT)) player.shoot(RIGHT);
+		if(input->isKeyDown(VK_SHIFT)) {
+			player.setSpeed(40);
 		}
-		for (int j = 0; j < pBullets.size(); j++) {
-			if (pBullets[j]->collided(&walls[i])) {
-				pBullets[j]->setInActive();
-				pBullets[j]->setVelocity(D3DXVECTOR3(0,0,0));
-				pBullets[j]->setPosition(D3DXVECTOR3(0,0,0));
-				shotTimer = 0;
-			}		
+		else player.setSpeed(20);
+		player.setVelocity(moveCube() * player.getSpeed());
+		player.update(dt);
+	
+		for (int i = 0; i < ragePickups.size(); i++) {
+			if (player.collided(&ragePickups[i])) {
+				ragePickups[i].setInActive();
+				player.charge();
+			}
+			ragePickups[i].update(dt);
 		}
-		for(int j=0; j<gameNS::NUM_CAMS; j++)
+
+		for(int i=0; i<gameNS::NUM_WALLS; i++)
 		{
-			for(int k=0; k<enBullets[j].size(); k++)
+			if(player.collided(&walls[i]))
 			{
-				if(enBullets[j][k]->collided(&walls[i])) 
+				//DEBUGGING AND LEVEL LAYOUT, COMMENT THIS OUT
+				//player.setPosition(oldPos);
+
+			}
+			for (int j = 0; j < pBullets.size(); j++) {
+				if (pBullets[j]->collided(&walls[i])) {
+					pBullets[j]->setInActive();
+					pBullets[j]->setVelocity(D3DXVECTOR3(0,0,0));
+					pBullets[j]->setPosition(D3DXVECTOR3(0,0,0));
+					shotTimer = 0;
+				}		
+			}
+			for(int j=0; j<gameNS::NUM_CAMS; j++)
+			{
+				for(int k=0; k<enBullets[j].size(); k++)
 				{
-					enBullets[j][k]->setInActive();
-					enBullets[j][k]->setVelocity(Vector3(0,0,0));
+					if(enBullets[j][k]->collided(&walls[i])) 
+					{
+						enBullets[j][k]->setInActive();
+						enBullets[j][k]->setVelocity(Vector3(0,0,0));
+					}
 				}
 			}
 		}
-	}
 
-	for(int i=0; i<gameNS::NUM_MONEY; i++)
-	{
-		if(player.collided(&money[i]))
+		for(int i=0; i<gameNS::NUM_MONEY; i++)
 		{
-			money[i].setInActive();
-			score += money[i].getPoints();
-		}
-		money[i].update(dt);
-	}
-	
-	floor.update(dt);
-	//gameObject2.update(dt);
-	//gameObject3.update(dt);
-	//spinner.update(dt);
-	xLine.update(dt);
-	//xLine.setPosition(player.getPosition());
-	yLine.update(dt);
-	//yLine.setPosition(player.getPosition());
-	zLine.update(dt);
-	//zLine.setPosition(player.getPosition());
-	//wall.update(dt);
-	//quad1.update(dt);
-
-	for(int i=0; i<gameNS::NUM_WALLS; i++)walls[i].update(dt);
-	for(int i=0; i<gameNS::NUM_CAMS; i++)
-	{
-		for (int j = 0; j < pBullets.size(); j++) {
-			if(pBullets[j]->collided(&enemyCam[i])&& enemyCam[i].getActiveState())
+			if(player.collided(&money[i]))
 			{
-				enemyCam[i].setInActive();
-				audio->playCue(HIT);
-				pBullets[j]->setInActive();
-				pBullets[j]->setVelocity(D3DXVECTOR3(0,0,0));
-				pBullets[j]->setPosition(D3DXVECTOR3(0,0,0));
-				score++;
+				money[i].setInActive();
+				score += money[i].getPoints();
 			}
+			money[i].update(dt);
 		}
+	
+		floor.update(dt);
+		//gameObject2.update(dt);
+		//gameObject3.update(dt);
+		//spinner.update(dt);
+		xLine.update(dt);
+		//xLine.setPosition(player.getPosition());
+		yLine.update(dt);
+		//yLine.setPosition(player.getPosition());
+		zLine.update(dt);
+		//zLine.setPosition(player.getPosition());
+		//wall.update(dt);
+		//quad1.update(dt);
+
+		for(int i=0; i<gameNS::NUM_WALLS; i++)walls[i].update(dt);
+		for(int i=0; i<gameNS::NUM_CAMS; i++)
+		{
+			for (int j = 0; j < pBullets.size(); j++) {
+				if(pBullets[j]->collided(&enemyCam[i])&& enemyCam[i].getActiveState())
+				{
+					enemyCam[i].setInActive();
+					audio->playCue(HIT);
+					pBullets[j]->setInActive();
+					pBullets[j]->setVelocity(D3DXVECTOR3(0,0,0));
+					pBullets[j]->setPosition(D3DXVECTOR3(0,0,0));
+					score++;
+				}
+			}
 		
-		enemyCam[i].update(dt, &player);
-		enemyCam[i].shoot(&player);
-		//if(!enemyCam[i].getActiveState())
-		//	enemyTimer[i] = 0;
-		//for(int k=0; k<enBullets[k].size(); k++)
-		//{
-		//	enBullets[i][k]->update(dt);
-		//}
-	}
-	int numberInRange=0;
-	for(int i=0; i<gameNS::NUM_CAMS; i++){
-		if(enemyCam[i].isInRange(player.getPosition()) && enemyTimer[i] == 0 && enemyCam[i].getActiveState()){
-			audio->playCue(WOOP_WOOP);
-			enemyTimer[i]=1;
+			enemyCam[i].update(dt, &player);
+			enemyCam[i].shoot(&player);
+			//if(!enemyCam[i].getActiveState())
+			//	enemyTimer[i] = 0;
+			//for(int k=0; k<enBullets[k].size(); k++)
+			//{
+			//	enBullets[i][k]->update(dt);
+			//}
 		}
-		if(!enemyCam[i].isInRange(player.getPosition()) || !enemyCam[i].getActiveState()){
-			enemyTimer[i]=0;
+		int numberInRange=0;
+		for(int i=0; i<gameNS::NUM_CAMS; i++){
+			if(enemyCam[i].isInRange(player.getPosition()) && enemyTimer[i] == 0 && enemyCam[i].getActiveState()){
+				audio->playCue(WOOP_WOOP);
+				enemyTimer[i]=1;
+			}
+			if(!enemyCam[i].isInRange(player.getPosition()) || !enemyCam[i].getActiveState()){
+				enemyTimer[i]=0;
+			}
+			numberInRange+=enemyTimer[i];
 		}
-		numberInRange+=enemyTimer[i];
+		if(numberInRange==0) audio->stopCue(WOOP_WOOP);
+		//spinAmount += dt ;
+		//if (ToRadian(spinAmount*40)>2*PI)
+		//	spinAmount = 0;
+		//Build the view matrix.
+		//D3DXVECTOR3 pos(-100.0f,100.0f,50.0f);
+		//D3DXVECTOR3 pos(-50.0f, 150.0f, 0.0f);
+		//D3DXVECTOR3 target(0.0f, 0.0f, 0.0f);
+		//D3DXVECTOR3 up(0.0f, 1.0f, 0.0f);
 	}
-	if(numberInRange==0) audio->stopCue(WOOP_WOOP);
-	//spinAmount += dt ;
-	//if (ToRadian(spinAmount*40)>2*PI)
-	//	spinAmount = 0;
-	//Build the view matrix.
-	//D3DXVECTOR3 pos(-100.0f,100.0f,50.0f);
-	//D3DXVECTOR3 pos(-50.0f, 150.0f, 0.0f);
-	//D3DXVECTOR3 target(0.0f, 0.0f, 0.0f);
-	//D3DXVECTOR3 up(0.0f, 1.0f, 0.0f);
+	else if (startScreen)
+	{
+		if(input->anyKeyPressed()) startScreen = false;
+	}
+	else
+	{
+		Sleep(1000);
+		if(input->anyKeyPressed())
+		{
+			endScreen = false;
+			PostQuitMessage(0);
+		}
+	}
 	D3DXVECTOR3 pos(player.getPosition().x - 25, player.getPosition().y + 50, player.getPosition().z);
 	D3DXVECTOR3 target(player.getPosition());
 	D3DXVECTOR3 up(0.0f, 1.0f, 0.0f);
@@ -545,88 +574,148 @@ void ColoredCubeApp::updateScene(float dt)
 void ColoredCubeApp::drawScene()
 {
 	D3DApp::drawScene();
-	// Restore default states, input layout and primitive topology 
-	// because mFont->DrawText changes them.  Note that we can 
-	// restore the default states by passing null.
-	md3dDevice->OMSetDepthStencilState(0, 0);
-	float blendFactors[] = {0.0f, 0.0f, 0.0f, 0.0f};
-	md3dDevice->OMSetBlendState(0, blendFactors, 0xffffffff);
-    md3dDevice->IASetInputLayout(mVertexLayout);
-
-	// set some variables for the shader
-	int foo[1];
-	foo[0] = 0;
-	// set the point to the shader technique
-	D3D10_TECHNIQUE_DESC techDesc;
-	mTech->GetDesc(&techDesc);
-
-	//Set mVP to be view*projection, so we can pass that into GO::draw(..)
-	mVP = mView*mProj;
-	for (int i = 0; i < ragePickups.size(); i++)
-		ragePickups[i].draw(mfxWVPVar, mTech, &mVP);
-
-	//setting the color flip variable in the shader
-	mfxFLIPVar->SetRawValue(&foo[0], 0, sizeof(int));
-
-	//draw the lines
-	drawLine(&xLine);
-	drawLine(&yLine);
-	drawLine(&zLine);
-	
-	/*****************************************
-	Walls!
-	*******************************************/
-	for(int i=0; i<gameNS::NUM_WALLS; i++)walls[i].draw(mfxWVPVar, mTech, &mVP);
-	for(int i=0; i<gameNS::NUM_MONEY; i++) money[i].draw(mfxWVPVar, mTech, &mVP);
-	
-	////draw the boxes
-	//test.draw(mfxWVPVar, mTech, &mVP);
-	floor.draw(mfxWVPVar, mTech, &mVP);
-	player.draw(mfxWVPVar, mTech, &mVP);
-	//pBullet.draw(mfxWVPVar, mTech, &mVP);
-	//Player & bullet classes implemented
-	//gravball.draw(mfxWVPVar, mTech, &mVP);
-	//gameObject1.draw(mfxWVPVar, mTech, &mVP);	
-
-	/*****************************************
-	Enemy Cameras
-	*******************************************/
-	for(int i=0; i<gameNS::NUM_CAMS; i++){
-		enemyCam[i].draw(mfxWVPVar, mTech, &mVP);
-//		enBullet[i].draw(mfxWVPVar, mTech, &mVP);
-		for(int j=0; j<enBullets[i].size(); j++)
-		{
-			enBullets[i][j]->draw(mfxWVPVar, mTech, &mVP);
-		}
-	}
-
-	// We specify DT_NOCLIP, so we do not care about width/height of the rect.
-	RECT R = {5, 5, 0, 0};
-	//mFont->DrawText(0, mFrameStats.c_str(), -1, &R, DT_NOCLIP, BLACK);
-	
-
-	// draw text
 	incrementedYMargin = 5;
 	int lineHeight = 20;
-	for (int i = 0; i < debugText.getSize(); i++)
+	if(!startScreen && !endScreen)
 	{
-		int xMargin = debugText.lines[i].x;
-		int yMargin = debugText.lines[i].y;
+		// Restore default states, input layout and primitive topology 
+		// because mFont->DrawText changes them.  Note that we can 
+		// restore the default states by passing null.
+		md3dDevice->OMSetDepthStencilState(0, 0);
+		float blendFactors[] = {0.0f, 0.0f, 0.0f, 0.0f};
+		md3dDevice->OMSetBlendState(0, blendFactors, 0xffffffff);
+		md3dDevice->IASetInputLayout(mVertexLayout);
 
-		if (xMargin == -1)
-			xMargin = 5;
-		if (yMargin == -1) {
-			yMargin = incrementedYMargin;
-			incrementedYMargin += lineHeight;
+		// set some variables for the shader
+		int foo[1];
+		foo[0] = 0;
+		// set the point to the shader technique
+		D3D10_TECHNIQUE_DESC techDesc;
+		mTech->GetDesc(&techDesc);
+
+		//Set mVP to be view*projection, so we can pass that into GO::draw(..)
+		mVP = mView*mProj;
+		for (int i = 0; i < ragePickups.size(); i++)
+			ragePickups[i].draw(mfxWVPVar, mTech, &mVP);
+
+		//setting the color flip variable in the shader
+		mfxFLIPVar->SetRawValue(&foo[0], 0, sizeof(int));
+
+		//draw the lines
+		drawLine(&xLine);
+		drawLine(&yLine);
+		drawLine(&zLine);
+	
+		/*****************************************
+		Walls!
+		*******************************************/
+		for(int i=0; i<gameNS::NUM_WALLS; i++)walls[i].draw(mfxWVPVar, mTech, &mVP);
+		for(int i=0; i<gameNS::NUM_MONEY; i++) money[i].draw(mfxWVPVar, mTech, &mVP);
+	
+		////draw the boxes
+		//test.draw(mfxWVPVar, mTech, &mVP);
+		floor.draw(mfxWVPVar, mTech, &mVP);
+		player.draw(mfxWVPVar, mTech, &mVP);
+		//pBullet.draw(mfxWVPVar, mTech, &mVP);
+		//Player & bullet classes implemented
+		//gravball.draw(mfxWVPVar, mTech, &mVP);
+		//gameObject1.draw(mfxWVPVar, mTech, &mVP);	
+
+		/*****************************************
+		Enemy Cameras
+		*******************************************/
+		for(int i=0; i<gameNS::NUM_CAMS; i++){
+			enemyCam[i].draw(mfxWVPVar, mTech, &mVP);
+	//		enBullet[i].draw(mfxWVPVar, mTech, &mVP);
+			for(int j=0; j<enBullets[i].size(); j++)
+			{
+				enBullets[i][j]->draw(mfxWVPVar, mTech, &mVP);
+			}
 		}
 
-		RECT POS = {xMargin, yMargin, 0, 0};
+		// We specify DT_NOCLIP, so we do not care about width/height of the rect.
+		RECT R = {5, 5, 0, 0};
+		//mFont->DrawText(0, mFrameStats.c_str(), -1, &R, DT_NOCLIP, BLACK);
+		for (int i = 0; i < debugText.getSize(); i++)
+		{
+			int xMargin = debugText.lines[i].x;
+			int yMargin = debugText.lines[i].y;
+
+			if (xMargin == -1)
+				xMargin = 5;
+			if (yMargin == -1) {
+				yMargin = incrementedYMargin;
+				incrementedYMargin += lineHeight;
+			}
+
+			
+		}
+		//RECT POS = {xMargin, yMargin, 0, 0};
+		RECT POS = {5, 5, 0, 0};
 
 		std::wostringstream outs;   
 		outs.precision(6);
-		outs << debugText.lines[i].s.c_str();
+		//outs << debugText.lines[i].s.c_str();
+		outs << L"Score: " << score;
+		std::wstring sc = outs.str();
 
-		mFont->DrawText(0, outs.str().c_str(), -1, &POS, DT_NOCLIP, WHITE);
+		mFont->DrawText(0, sc.c_str(), -1, &POS, DT_NOCLIP, WHITE);
+	}
+	else if(startScreen)
+	{		
+		for (int i = 0; i < sText.getSize(); i++)
+		{
+			int xMargin = sText.lines[i].x;
+			int yMargin = sText.lines[i].y;
+
+			if (xMargin == -1)
+				xMargin = 5;
+			if (yMargin == -1) {
+				yMargin = incrementedYMargin;
+				incrementedYMargin += lineHeight;
+			}
+
+			RECT POS = {xMargin, yMargin, 0, 0};
+
+			std::wostringstream outs;   
+			outs.precision(6);
+			outs << sText.lines[i].s.c_str();
+
+			mFont->DrawText(0, outs.str().c_str(), -1, &POS, DT_NOCLIP, WHITE);
+		}
+	}
+	else
+	{
+		for (int i = 0; i < eText.getSize(); i++)
+		{
+			int xMargin = eText.lines[i].x;
+			int yMargin = eText.lines[i].y;
+
+			if (xMargin == -1)
+				xMargin = 5;
+			if (yMargin == -1) {
+				yMargin = incrementedYMargin;
+				incrementedYMargin += lineHeight;
+			}
+
+			RECT POS = {xMargin, yMargin, 0, 0};
+
+			std::wostringstream outs;   
+			outs.precision(6);
+			outs << eText.lines[i].s.c_str();
+
+			mFont->DrawText(0, outs.str().c_str(), -1, &POS, DT_NOCLIP, WHITE);
+		}
+		//RECT POS = {xMargin, yMargin, 0, 0};
+		RECT POS = {300, 350, 0, 0};
+
+		std::wostringstream outs;   
+		outs.precision(6);
+		//outs << debugText.lines[i].s.c_str();
+		outs << L"Score: " << score;
+		std::wstring sc = outs.str();
+
+		mFont->DrawText(0, sc.c_str(), -1, &POS, DT_NOCLIP, WHITE);
 	}
 	mSwapChain->Present(0, 0);
 }
