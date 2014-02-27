@@ -460,6 +460,18 @@ void ColoredCubeApp::updateScene(float dt)
 						enBullets[j][k]->setInActive();
 						enBullets[j][k]->setVelocity(Vector3(0,0,0));
 						score--;
+						switch(rand()%2+1){
+						case 1:
+							audio->stopCue(OUCH1);
+							audio->stopCue(OUCH2);
+							audio->playCue(OUCH1);
+							break;
+						case 2:
+							audio->stopCue(OUCH1);
+							audio->stopCue(OUCH2);
+							audio->playCue(OUCH2);
+							break;
+						}
 					}
 				}
 			}
@@ -471,6 +483,7 @@ void ColoredCubeApp::updateScene(float dt)
 			{
 				money[i].setInActive();
 				score += money[i].getPoints();
+				audio->playCue(CASH);
 			}
 			money[i].update(dt);
 		}

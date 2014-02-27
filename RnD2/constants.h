@@ -52,7 +52,9 @@ const char PLAYER_FIRE[] = "oomph";
 const char HIT[] = "Alien Death Ray";
 const char WOOP_WOOP[] = "Woop Woop";
 const char MUSIC[] = "57239_newgrounds_space_";
-
+const char OUCH1[] = "Male Grunt-SoundBible.com-68178715";
+const char OUCH2[] = "Hl2_Rebel-Ragdoll";
+const char CASH[] = "Cash Register Cha Ching";
 //=============================================================================
 // Function templates for safely dealing with pointer referenced items.
 // The functions defined by these templates may be called using a normal
