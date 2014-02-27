@@ -30,7 +30,7 @@
 #include "Money.h"
 #include <ctime>
 using std::time;
-
+//#define DEBUGGING //DR. BIRMINGHAM MODE
 namespace colorNS
 {
     // Some common colors
@@ -432,8 +432,11 @@ void ColoredCubeApp::updateScene(float dt)
 			if(player.collided(&walls[i]))
 			{
 				//DEBUGGING AND LEVEL LAYOUT, COMMENT THIS OUT
-				//player.setPosition(oldPos);
-
+#ifdef DEBUGGING
+				
+#else
+				player.setPosition(oldPos);
+#endif
 			}
 			for (int j = 0; j < pBullets.size(); j++) {
 				if (pBullets[j]->collided(&walls[i])) {
@@ -451,6 +454,12 @@ void ColoredCubeApp::updateScene(float dt)
 					{
 						enBullets[j][k]->setInActive();
 						enBullets[j][k]->setVelocity(Vector3(0,0,0));
+					}
+					if(player.collided(enBullets[j][k]))
+					{
+						enBullets[j][k]->setInActive();
+						enBullets[j][k]->setVelocity(Vector3(0,0,0));
+						score--;
 					}
 				}
 			}
