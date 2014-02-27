@@ -717,7 +717,7 @@ void ColoredCubeApp::drawScene()
 		//RECT POS = {xMargin, yMargin, 0, 0};
 		RECT POS = {300, 350, 0, 0};
 
-		std::wostringstream outs;   
+		std::wostringstream outs;
 		outs.precision(6);
 		//outs << debugText.lines[i].s.c_str();
 		outs << L"Score: " << score;
