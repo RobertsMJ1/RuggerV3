@@ -1,3 +1,43 @@
+/*
+
+
+
+			THIS IS RUGGER AND DUNSTAN 2.0!
+			..Sorry, no grav balls in this one.
+
+			wasd to move, arrows to shoot
+			uncomment the following define to engage no-clip mode
+
+			
+*/
+
+//#define DEBUGGING //DR. BIRMINGHAM MODE
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //=============================================================================
 // Color Cube App.cpp by Frank Luna (C) 2008 All Rights Reserved.
 //
@@ -8,7 +48,6 @@
 //
 //=============================================================================
 
-//Hey guys I'm submitting!
 
 #include "d3dApp.h"
 //#include "input.h"
@@ -30,7 +69,7 @@
 #include "Money.h"
 #include <ctime>
 using std::time;
-//#define DEBUGGING //DR. BIRMINGHAM MODE
+
 namespace colorNS
 {
     // Some common colors
@@ -68,7 +107,7 @@ namespace gameNS {
 	const int NUM_WALLS = 41;
 	const int PERIMETER = 4;
 	const int NUM_CAMS = 78;
-	const int NUM_MONEY = 200;
+	const int NUM_MONEY = 2500;
 	const int NUM_BULLETS = 5;
 	const int NUM_RAGE_PICKUPS = 4;
 }
@@ -385,7 +424,7 @@ void ColoredCubeApp::initApp()
 	sText.addLine("HOLD SHIFT TO SPRINT!", 10, 70);
 	sText.addLine("GO KILL DUNSTAN FOR ME!", 10, 90);
 	sText.addLine("PRESS ANY KEY TO BEGIN !", 250, 300);
-	eText.addLine("CONGRATS RUGGER YOU WON!", 250, 300);
+	eText.addLine("CONGRATS RUGGER I WON!", 250, 300);
 
 	shotTimer = 0;
 	buildFX();
@@ -405,6 +444,7 @@ void ColoredCubeApp::updateScene(float dt)
 {
 	if(!endScreen && !startScreen)
 	{
+	
 		if(!enemyCam[gameNS::NUM_CAMS-1].getActiveState()) endScreen = true;
 	
 		D3DApp::updateScene(dt);
