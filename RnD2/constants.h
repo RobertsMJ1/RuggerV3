@@ -55,6 +55,7 @@ const char MUSIC[] = "57239_newgrounds_space_";
 const char OUCH1[] = "Male Grunt-SoundBible.com-68178715";
 const char OUCH2[] = "Hl2_Rebel-Ragdoll";
 const char CASH[] = "Cash Register Cha Ching";
+const char SAD[] = "Sad";
 //=============================================================================
 // Function templates for safely dealing with pointer referenced items.
 // The functions defined by these templates may be called using a normal
