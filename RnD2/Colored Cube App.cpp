@@ -493,7 +493,6 @@ void ColoredCubeApp::updateScene(float dt)
 					score++;
 				}
 			}
-		
 			enemyCam[i].update(dt, &player);
 			enemyCam[i].shoot(&player);
 			//if(!enemyCam[i].getActiveState())
