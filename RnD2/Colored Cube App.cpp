@@ -68,7 +68,7 @@ namespace gameNS {
 	const int NUM_WALLS = 41;
 	const int PERIMETER = 4;
 	const int NUM_CAMS = 78;
-	const int NUM_MONEY = 100;
+	const int NUM_MONEY = 500;
 	const int NUM_BULLETS = 5;
 	const int NUM_RAGE_PICKUPS = 4;
 }
@@ -102,7 +102,7 @@ private:
  
 private:
 	Line rLine, bLine, gLine;
-	Box mBox, redBox, brick, camBox, bulletBox, eBulletBox, yellowGreenBox, goldBox, blueBox, tealBox;
+	Box mBox, redBox, brick, camBox, bulletBox, eBulletBox, yellowGreenBox, goldBox, blueBox, tealBox, maroonBox;
 	Player player;
 	vector<Bullet*> pBullets, enBullets[gameNS::NUM_CAMS];
 	LineObject xLine, yLine, zLine;
@@ -113,6 +113,7 @@ private:
 	Wall floor;
 	Money money[gameNS::NUM_MONEY];
 	vector<GameObject> ragePickups;
+	GameObject superLowFloorOffInTheDistanceUnderTheScene;
 
 	float spinAmount;
 	int shotTimer;
@@ -195,6 +196,7 @@ void ColoredCubeApp::initApp()
 	camBox.init(md3dDevice, 1.0f, BLACK);
 	bulletBox.init(md3dDevice, 0.5f, BEACH_SAND);
 	eBulletBox.init(md3dDevice, 0.5f, RED);
+	maroonBox.init(md3dDevice, 10000, colorNS::MAROON);
 	//redBox.init(md3dDevice, 0.00001f, RED);
 	yellowGreenBox.init(md3dDevice, 1.f, LIGHT_YELLOW_GREEN);
 	goldBox.init(md3dDevice, 1.0f, YELLOW);
@@ -239,7 +241,7 @@ void ColoredCubeApp::initApp()
 	floor.init(&yellowGreenBox, 2.0f, Vector3(0,-1.5f,0), 1.0f, 100, 0.01, 100);
 	player.init(&mBox, pBullets, sqrt(2.0f), Vector3(-90,0,85), Vector3(0,0,0), 0, 1);
 	
-
+	superLowFloorOffInTheDistanceUnderTheScene.init(&maroonBox, 2.0f, Vector3(0,-10.0f,0), Vector3(0,0,0), 0, 100000);
 
 //				   geom,  rad,  position,			sc,	w,  h,  d
 	walls[0].init(&brick, 2.0f, Vector3(0, 0, 100),	1, 100, 10, 1);
@@ -623,9 +625,10 @@ void ColoredCubeApp::drawScene()
 		mfxFLIPVar->SetRawValue(&foo[0], 0, sizeof(int));
 
 		//draw the lines
-		drawLine(&xLine);
-		drawLine(&yLine);
-		drawLine(&zLine);
+		//drawLine(&xLine);
+		//drawLine(&yLine);
+		//drawLine(&zLine);
+
 	
 		/*****************************************
 		Walls!
