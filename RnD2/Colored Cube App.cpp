@@ -375,6 +375,7 @@ void ColoredCubeApp::initApp()
 	shotTimer = 0;
 	buildFX();
 	buildVertexLayouts();
+	audio->playCue(MUSIC);
 }
 
 void ColoredCubeApp::onResize()

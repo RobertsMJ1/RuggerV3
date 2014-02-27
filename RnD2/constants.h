@@ -51,6 +51,7 @@ wchar_t const SOUND_BANK[] = L"audio\\Win\\Sound Bank.xsb";
 const char PLAYER_FIRE[] = "oomph";
 const char HIT[] = "Alien Death Ray";
 const char WOOP_WOOP[] = "Woop Woop";
+const char MUSIC[] = "57239_newgrounds_space_";
 
 //=============================================================================
 // Function templates for safely dealing with pointer referenced items.
