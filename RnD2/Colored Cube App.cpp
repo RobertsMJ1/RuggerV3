@@ -70,6 +70,7 @@ namespace gameNS {
 	const int NUM_CAMS = 78;
 	const int NUM_MONEY = 100;
 	const int NUM_BULLETS = 5;
+	const int NUM_RAGE_PICKUPS = 4;
 }
 
 namespace fontNS
@@ -101,7 +102,7 @@ private:
  
 private:
 	Line rLine, bLine, gLine;
-	Box mBox, redBox, brick, camBox, bulletBox, eBulletBox, yellowGreenBox, goldBox, blueBox, greenBox;
+	Box mBox, redBox, brick, camBox, bulletBox, eBulletBox, yellowGreenBox, goldBox, blueBox, tealBox;
 	Player player;
 	vector<Bullet*> pBullets, enBullets[gameNS::NUM_CAMS];
 	LineObject xLine, yLine, zLine;
@@ -111,7 +112,7 @@ private:
 	//Gravball gravball;
 	Wall floor;
 	Money money[gameNS::NUM_MONEY];
-	GameObject pickup;
+	vector<GameObject> ragePickups;
 
 	float spinAmount;
 	int shotTimer;
@@ -185,7 +186,7 @@ void ColoredCubeApp::initApp()
 	D3DApp::initApp();
 #pragma region Base object initialization
 	mBox.init(md3dDevice, 1.0f, WHITE);
-	greenBox.init(md3dDevice, 1.0f, RED);
+	tealBox.init(md3dDevice, 1.0f, colorNS::TEAL);
 	brick.init(md3dDevice, 1.0f, DARKBROWN);
 	camBox.init(md3dDevice, 1.0f, BLACK);
 	bulletBox.init(md3dDevice, 0.5f, BEACH_SAND);
@@ -219,7 +220,16 @@ void ColoredCubeApp::initApp()
 		enemyTimer[j]= 0;
 	}
 
-	pickup.init(&greenBox, 2.0f, Vector3(-90,0,80), Vector3(0,0,0),0,1);
+	for (int i = 0; i < gameNS::NUM_RAGE_PICKUPS; i++) {
+		ragePickups.push_back(GameObject());
+	}
+
+	
+	ragePickups[0].init(&tealBox, 2.0f, Vector3(-35,0,95), Vector3(0,0,0),0,1);
+	ragePickups[1].init(&tealBox, 2.0f, Vector3(6,0,-80), Vector3(0,0,0),0,1);
+	ragePickups[2].init(&tealBox, 2.0f, Vector3(-84,0,-56), Vector3(0,0,0),0,1);
+	ragePickups[3].init(&tealBox, 2.0f, Vector3(10,0,80), Vector3(0,0,0),0,1);
+	
 
 	//floor.init(&yellowGreenBox, sqrt(2.0), Vector3(-5,-0.02,-5), Vector3(0,0,0), 0, 1);
 	floor.init(&yellowGreenBox, 2.0f, Vector3(0,-1.5f,0), 1.0f, 100, 0.01, 100);
@@ -392,13 +402,14 @@ void ColoredCubeApp::updateScene(float dt)
 	player.setVelocity(moveCube() * player.getSpeed());
 	player.update(dt);
 	
-	if (player.collided(&pickup)) {
-		pickup.setInActive();
-		player.charge();
+	for (int i = 0; i < ragePickups.size(); i++) {
+		if (player.collided(&ragePickups[i])) {
+			ragePickups[i].setInActive();
+			player.charge();
+		}
+		ragePickups[i].update(dt);
 	}
-
-	pickup.update(dt);
-
+	
 
 	for(int i=0; i<gameNS::NUM_WALLS; i++)
 	{
@@ -550,8 +561,8 @@ void ColoredCubeApp::drawScene()
 
 	//Set mVP to be view*projection, so we can pass that into GO::draw(..)
 	mVP = mView*mProj;
-
-	pickup.draw(mfxWVPVar, mTech, &mVP);
+	for (int i = 0; i < ragePickups.size(); i++)
+		ragePickups[i].draw(mfxWVPVar, mTech, &mVP);
 
 	//setting the color flip variable in the shader
 	mfxFLIPVar->SetRawValue(&foo[0], 0, sizeof(int));

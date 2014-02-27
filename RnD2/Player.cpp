@@ -73,7 +73,7 @@ void Player::charge() {
 
 void Player::shoot(int direction)
 {
-	if (timeCharged > 1.5) {
+	if (timeCharged > 3) {
 		timeCharged = 0;
 		charging = false;
 		rage = 1;
