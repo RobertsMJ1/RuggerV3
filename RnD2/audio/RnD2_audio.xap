@@ -16,8 +16,8 @@ Global Settings
     Header File = C:\Users\lehmanad1\Documents\GitHub\RuggerV3\RnD2\audio\RnD2_audio.h;
     Exclude Category Names = 0;
     Exclude Variable Names = 0;
-    Last Modified Low = 3777899709;
-    Last Modified High = 30356321;
+    Last Modified Low = 3592477624;
+    Last Modified High = 30356325;
 
     Category
     {
@@ -227,10 +227,10 @@ Wave Bank
     Compression Preset Name = <none>;
     Xbox Bank Last Modified Low = 0;
     Xbox Bank Last Modified High = 0;
-    PC Bank Last Modified Low = 3777959753;
-    PC Bank Last Modified High = 30356321;
-    Bank Last Revised Low = 1346410064;
-    Bank Last Revised High = 30356321;
+    PC Bank Last Modified Low = 3592597720;
+    PC Bank Last Modified High = 30356325;
+    Bank Last Revised Low = 3191635208;
+    Bank Last Revised High = 30356325;
 
     Wave
     {
@@ -273,8 +273,8 @@ Wave Bank
             Loop Region Offset = 0;
             Loop Region Length = 0;
             File Type = 1;
-            Last Modified Low = 314815606;
-            Last Modified High = 30356320;
+            Last Modified Low = 2503202633;
+            Last Modified High = 30356323;
         }
     }
 
@@ -319,8 +319,77 @@ Wave Bank
             Loop Region Offset = 0;
             Loop Region Length = 0;
             File Type = 1;
-            Last Modified Low = 4241164967;
-            Last Modified High = 30356320;
+            Last Modified Low = 2495883703;
+            Last Modified High = 30356323;
+        }
+    }
+
+    Wave
+    {
+        Name = Male Grunt-SoundBible.com-68178715;
+        File = Male Grunt-SoundBible.com-68178715.wav;
+        Build Settings Last Modified Low = 896720995;
+        Build Settings Last Modified High = 30356325;
+
+        Cache
+        {
+            Format Tag = 0;
+            Channels = 2;
+            Sampling Rate = 44100;
+            Bits Per Sample = 1;
+            Play Region Offset = 44;
+            Play Region Length = 718848;
+            Loop Region Offset = 0;
+            Loop Region Length = 0;
+            File Type = 1;
+            Last Modified Low = 92083599;
+            Last Modified High = 30356325;
+        }
+    }
+
+    Wave
+    {
+        Name = Hl2_Rebel-Ragdoll;
+        File = Hl2_Rebel-Ragdoll.wav;
+        Build Settings Last Modified Low = 3079987750;
+        Build Settings Last Modified High = 30356325;
+
+        Cache
+        {
+            Format Tag = 0;
+            Channels = 2;
+            Sampling Rate = 44100;
+            Bits Per Sample = 1;
+            Play Region Offset = 44;
+            Play Region Length = 495768;
+            Loop Region Offset = 0;
+            Loop Region Length = 0;
+            File Type = 1;
+            Last Modified Low = 3228164731;
+            Last Modified High = 30356324;
+        }
+    }
+
+    Wave
+    {
+        Name = Cash Register Cha Ching;
+        File = Cash Register Cha Ching.wav;
+        Build Settings Last Modified Low = 3129291021;
+        Build Settings Last Modified High = 30356325;
+
+        Cache
+        {
+            Format Tag = 0;
+            Channels = 1;
+            Sampling Rate = 11025;
+            Bits Per Sample = 1;
+            Play Region Offset = 44;
+            Play Region Length = 15014;
+            Loop Region Offset = 0;
+            Loop Region Length = 0;
+            File Type = 1;
+            Last Modified Low = 1066297374;
+            Last Modified High = 30356324;
         }
     }
 }
@@ -332,8 +401,8 @@ Sound Bank
     Windows File = Win\Sound Bank.xsb;
     Xbox Bank Path Edited = 0;
     Windows Bank Path Edited = 0;
-    Bank Last Modified Low = 3780410607;
-    Bank Last Modified High = 30356321;
+    Bank Last Modified Low = 3593888580;
+    Bank Last Modified High = 30356325;
     Header Last Modified High = 0;
     Header Last Modified Low = 0;
 
@@ -527,6 +596,147 @@ Sound Bank
         }
     }
 
+    Sound
+    {
+        Name = Male Grunt-SoundBible.com-68178715;
+        Volume = -1200;
+        Pitch = 0;
+        Priority = 0;
+
+        Category Entry
+        {
+            Name = Default;
+        }
+
+        Track
+        {
+            Volume = 0;
+            Use Filter = 0;
+
+            Play Wave Event
+            {
+                Break Loop = 0;
+                Use Speaker Position = 0;
+                Use Center Speaker = 1;
+                New Speaker Position On Loop = 1;
+                Speaker Position Angle = 0.000000;
+                Speaker Position Arc = 0.000000;
+
+                Event Header
+                {
+                    Timestamp = 0;
+                    Relative = 0;
+                    Random Recurrence = 0;
+                    Random Offset = 0;
+                }
+
+                Wave Entry
+                {
+                    Bank Name = Wave Bank;
+                    Bank Index = 0;
+                    Entry Name = Male Grunt-SoundBible.com-68178715;
+                    Entry Index = 4;
+                    Weight = 255;
+                    Weight Min = 0;
+                }
+            }
+        }
+    }
+
+    Sound
+    {
+        Name = Hl2_Rebel-Ragdoll;
+        Volume = -1200;
+        Pitch = 0;
+        Priority = 0;
+
+        Category Entry
+        {
+            Name = Default;
+        }
+
+        Track
+        {
+            Volume = 0;
+            Use Filter = 0;
+
+            Play Wave Event
+            {
+                Break Loop = 0;
+                Use Speaker Position = 0;
+                Use Center Speaker = 1;
+                New Speaker Position On Loop = 1;
+                Speaker Position Angle = 0.000000;
+                Speaker Position Arc = 0.000000;
+
+                Event Header
+                {
+                    Timestamp = 0;
+                    Relative = 0;
+                    Random Recurrence = 0;
+                    Random Offset = 0;
+                }
+
+                Wave Entry
+                {
+                    Bank Name = Wave Bank;
+                    Bank Index = 0;
+                    Entry Name = Hl2_Rebel-Ragdoll;
+                    Entry Index = 5;
+                    Weight = 255;
+                    Weight Min = 0;
+                }
+            }
+        }
+    }
+
+    Sound
+    {
+        Name = Cash Register Cha Ching;
+        Volume = -1200;
+        Pitch = 0;
+        Priority = 0;
+
+        Category Entry
+        {
+            Name = Default;
+        }
+
+        Track
+        {
+            Volume = 0;
+            Use Filter = 0;
+
+            Play Wave Event
+            {
+                Break Loop = 0;
+                Use Speaker Position = 0;
+                Use Center Speaker = 1;
+                New Speaker Position On Loop = 1;
+                Speaker Position Angle = 0.000000;
+                Speaker Position Arc = 0.000000;
+
+                Event Header
+                {
+                    Timestamp = 0;
+                    Relative = 0;
+                    Random Recurrence = 0;
+                    Random Offset = 0;
+                }
+
+                Wave Entry
+                {
+                    Bank Name = Wave Bank;
+                    Bank Index = 0;
+                    Entry Name = Cash Register Cha Ching;
+                    Entry Index = 6;
+                    Weight = 255;
+                    Weight Min = 0;
+                }
+            }
+        }
+    }
+
     Cue
     {
         Name = oomph;
@@ -602,6 +812,66 @@ Sound Bank
         {
             Name = 57239_newgrounds_space_;
             Index = 3;
+            Weight Min = 0;
+            Weight Max = 255;
+        }
+    }
+
+    Cue
+    {
+        Name = Male Grunt-SoundBible.com-68178715;
+
+        Variation
+        {
+            Variation Type = 3;
+            Variation Table Type = 1;
+            New Variation on Loop = 0;
+        }
+
+        Sound Entry
+        {
+            Name = Male Grunt-SoundBible.com-68178715;
+            Index = 4;
+            Weight Min = 0;
+            Weight Max = 255;
+        }
+    }
+
+    Cue
+    {
+        Name = Hl2_Rebel-Ragdoll;
+
+        Variation
+        {
+            Variation Type = 3;
+            Variation Table Type = 1;
+            New Variation on Loop = 0;
+        }
+
+        Sound Entry
+        {
+            Name = Hl2_Rebel-Ragdoll;
+            Index = 5;
+            Weight Min = 0;
+            Weight Max = 255;
+        }
+    }
+
+    Cue
+    {
+        Name = Cash Register Cha Ching;
+
+        Variation
+        {
+            Variation Type = 3;
+            Variation Table Type = 1;
+            New Variation on Loop = 0;
+        }
+
+        Sound Entry
+        {
+            Name = Cash Register Cha Ching;
+            Index = 6;
             Weight Min = 0;
             Weight Max = 255;
         }
